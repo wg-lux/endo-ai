@@ -5,7 +5,6 @@ let
     # cudaPackages.cuda_cudart
     # cudaPackages.cudnn
     stdenv.cc.cc
-    # cacert
   ];
 
   DJANGO_MODULE = "endo_ai";
@@ -25,6 +24,7 @@ let
 
   endoregDbRepoDir = "./endoreg-db-production";
   endoregDbApiRepoDir = "./endoreg-db-api-production";
+  aglFrameExtractorRepoDir = "./agl-frame-extractor";
 
   port = 8183;
 
@@ -39,7 +39,7 @@ in
   packages = with pkgs; [
     cudaPackages.cuda_nvcc
     stdenv.cc.cc
-    # cacert
+    ffmpeg_6-full
   ];
 
   env = {
@@ -98,6 +98,14 @@ in
     fi
 
     uv pip install -e ${endoregDbApiRepoDir}/.
+
+    if [ -d "${aglFrameExtractorRepoDir}/.git" ]; then
+      cd ${aglFrameExtractorRepoDir} && git pull && cd ..
+    else
+      git clone https://github.com/wg-lux/agl-frame-extractor ./${aglFrameExtractorRepoDir}
+    fi
+
+    uv pip install -e ${aglFrameExtractorRepoDir}/.
 
     devenv tasks run deploy:make-migrations
     devenv tasks run deploy:migrate
