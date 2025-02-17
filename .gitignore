@@ -9,9 +9,6 @@ examples/*
 
 .direnv/
 .devenv/
-
-uv.lock
-devenv.lock
 .devenv.flake.nix
 
 # Byte-compiled / optimized / DLL files
