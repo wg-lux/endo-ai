@@ -17,6 +17,7 @@ dependencies = [
     "opencv-python>=4.11.0.86",
     "psycopg[binary]>=3.2.3",
     "pydantic>=2.10.6",
+    "python-ffmpeg>=2.0.12",
     "pytorch-lightning>=2.5.0.post0",
     "pyyaml>=6.0.2",
     "scipy>=1.15.1",
