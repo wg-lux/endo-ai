@@ -5,9 +5,28 @@ let
     # cudaPackages.cuda_cudart
     # cudaPackages.cudnn
     stdenv.cc.cc
+    # cacert
   ];
 
   DJANGO_MODULE = "endo_ai";
+
+  user = "admin";
+
+  dataDir = "./data";
+  importDir = "./data/import";
+  importVideoDir = "${importDir}/video";
+  importReportDir = "${importDir}/report";
+  importLegacyAnnotationDir = "${importDir}/legacy_annotations";
+  
+  exportDir = "./data/export";
+  exportFramesRootDir = "${exportDir}/frames";
+  exportFramesSampleExportDir = "${exportFramesRootDir}/test_outputs";
+  modelDir = "./data/models";
+
+  endoregDbRepoDir = "./endoreg-db-production";
+  endoregDbApiRepoDir = "./endoreg-db-api-production";
+
+  port = 8183;
 
 in 
 {
@@ -20,6 +39,7 @@ in
   packages = with pkgs; [
     cudaPackages.cuda_nvcc
     stdenv.cc.cc
+    # cacert
   ];
 
   env = {
@@ -30,6 +50,7 @@ in
     CONF_DIR = "./conf";
     DJANGO_DEBUG = "True";
     DJANGO_SETTINGS_MODULE = "${DJANGO_MODULE}.settings_dev";
+    # SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
 
   };
 
@@ -43,7 +64,7 @@ in
 
   scripts.hello.exec = "${pkgs.uv}/bin/uv run python hello.py";
   scripts.run-dev-server.exec =
-    "${pkgs.uv}/bin/uv run python manage.py runserver localhost:8182";
+    "${pkgs.uv}/bin/uv run python manage.py runserver localhost:${toString port}";
 
   scripts.run-prod-server.exec =
     "${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application";
@@ -59,22 +80,24 @@ in
   '';
 
   scripts.init-environment.exec = ''
+    ensure-dirs 
+
     uv pip install -e .
-    if [ -d "endoreg-db-production/.git" ]; then
-      cd endoreg-db-production && git pull && cd ..
+    if [ -d "${endoregDbRepoDir}/.git" ]; then
+      cd ${endoregDbRepoDir} && git pull && cd ..
     else
-      git clone https://github.com/wg-lux/endoreg-db ./endoreg-db-production
+      git clone https://github.com/wg-lux/endoreg-db ./${endoregDbRepoDir}
     fi
     
-    uv pip install -e endoreg-db-production/. 
+    uv pip install -e ${endoregDbRepoDir}/. 
 
-    if [ -d "endoreg-db-api-production/.git" ]; then
-      cd endoreg-db-api-production && git pull && cd ..
+    if [ -d "${endoregDbApiRepoDir}/.git" ]; then
+      cd ${endoregDbApiRepoDir} && git pull && cd ..
     else
-      git clone https://github.com/wg-lux/endoreg-db-api ./endoreg-db-api-production
+      git clone https://github.com/wg-lux/endoreg-db-api ./${endoregDbApiRepoDir}
     fi
 
-    uv pip install -e endoreg-db-api-production/.
+    uv pip install -e ${endoregDbApiRepoDir}/.
 
     devenv tasks run deploy:make-migrations
     devenv tasks run deploy:migrate
@@ -95,8 +118,22 @@ in
     devenv tasks run deploy:load-base-db-data
   '';
 
+  scripts.ensure-dirs.exec = ''
+    mkdir -p ${dataDir}
+    mkdir -p ${importDir}
+    mkdir -p ${importVideoDir}
+    mkdir -p ${importReportDir}
+    mkdir -p ${exportDir}
+    mkdir -p ${modelDir}
+    mkdir -p ${importLegacyAnnotationDir}
+    mkdir -p ${exportFramesRootDir}
+
+    chown -R ${user} ${dataDir}
+    chmod -R 700 ${dataDir}
+    '';
+
   scripts.test-local-endoreg-db.exec = ''
-    cd endoreg-db-production
+    cd ${endoregDbRepoDir}
     devenv shell -i runtests
     cd ..
   '';
@@ -128,6 +165,6 @@ in
 
   enterShell = ''
     . .devenv/state/venv/bin/activate
-    # init-environment
+    init-environment
   '';
 }
