@@ -1,6 +1,6 @@
-endoreg-db-production/
-endoreg-db-api-production/
-agl-frame-extractor/
+endoreg_db_production/
+endoreg_db_api_production/
+agl_frame_extractor/
 
 data_anonym/
 data/

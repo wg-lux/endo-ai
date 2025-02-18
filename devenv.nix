@@ -22,9 +22,9 @@ let
   exportFramesSampleExportDir = "${exportFramesRootDir}/test_outputs";
   modelDir = "./data/models";
 
-  endoregDbRepoDir = "./endoreg-db-production";
-  endoregDbApiRepoDir = "./endoreg-db-api-production";
-  aglFrameExtractorRepoDir = "./agl-frame-extractor";
+  endoregDbRepoDir = "./endoreg_db_production";
+  endoregDbApiRepoDir = "./endoreg_db_api_production";
+  aglFrameExtractorRepoDir = "./agl_frame_extractor";
 
   port = 8183;
 
@@ -40,9 +40,11 @@ in
     cudaPackages.cuda_nvcc
     stdenv.cc.cc
     ffmpeg_6-full
+    tesseract
   ];
 
   env = {
+    DJANGO_PSEUDO_DIR = "/home/admin/test-data";
     LD_LIBRARY_PATH = "${
       with pkgs;
       lib.makeLibraryPath buildInputs

@@ -6,26 +6,34 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "agl-frame-extractor>=0.2.1",
-    "albumentations>=2.0.4",
-    "asgiref>=3.8.1",
-    "certifi>=2025.1.31",
+    "albumentations",
+    "asgiref",
+    "certifi",
     "channels>=4.2.0",
     "daphne>=4.1.2",
     "django>=5.1.3",
-    "endoreg-db>=0.5.3",
-    "icecream>=2.1.4",
+    "endoreg-db",
+    "endoreg-db-api",
+    # "endoreg-db>=0.5.3",
+    "icecream",
     "opencv-python>=4.11.0.86",
     "psycopg[binary]>=3.2.3",
-    "pydantic>=2.10.6",
-    "python-ffmpeg>=2.0.12",
+    "pydantic",
+    "python-ffmpeg",
     "pytorch-lightning>=2.5.0.post0",
-    "pyyaml>=6.0.2",
-    "scipy>=1.15.1",
-    "torch>=2.5.1",
-    "torchaudio>=2.6.0",
-    "torchvision>=0.21.0", # Should be same version as version provided in devenv.nix
-    "whitenoise>=6.8.2",
+    "pyyaml",
+    "scipy",
+    "torch",
+    "torchaudio",
+    "torchvision",
+    "whitenoise",
 ]
 
 [tool.setuptools]
 packages = ["endo_ai"]
+
+[tool.uv.sources]
+endoreg-db-api = { path = "endoreg_db_api_production" }
+endoreg-db = { path = "endoreg_db_production" }
+agl-frame-extractor = { path = "agl_frame_extractor" }
+endo-ai = { path = "endo_ai" }

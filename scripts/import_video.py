@@ -1,17 +1,21 @@
 from pathlib import Path
+from endoreg_db.models import RawVideoFile
 from agl_frame_extractor import VideoFrameExtractor
 
-VIDEO_INPUT_DIR = Path("~/test-data/video")
+
+VIDEO_INPUT_DIR = Path("~/test-data/video").expanduser()
 VIDEO_FILE = VIDEO_INPUT_DIR / "NINJAU_S001_S001_T029.MOV"
 
-vfe = VideoFrameExtractor(
-    input_folder="data/videos",
-    output_folder="data/frames",
-    use_multithreading=True,
-    image_format="jpg",
-)
+FRAME_EXTRACTOR_DATA_DIR = Path("~/test-data/frame-extractor").expanduser()
+FRAME_EXTRACTOR_DATA_DIR.mkdir(exist_ok=True)
 
-# Transcode the input video if needed.
-transcoded_file = vfe.transcode_video(VIDEO_FILE.resolve().as_posix())
-# Extract frames from the transcoded video.
-vfe.process_video(transcoded_file)
+
+# vfe = VideoFrameExtractor(
+#     input_folder=VIDEO_INPUT_DIR.resolve().as_posix(),
+#     output_folder=FRAME_EXTRACTOR_DATA_DIR.resolve().as_posix(),
+#     use_multithreading=True,
+#     image_format="jpg",
+# )
+
+# # Extract frames and metadata from the video.
+# vfe.extract_frames_and_metadata()
