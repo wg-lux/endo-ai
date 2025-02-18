@@ -3,12 +3,17 @@ from io import StringIO
 from pathlib import Path
 from endoreg_db.models import RawVideoFile, Center, EndoscopyProcessor
 from agl_frame_extractor import VideoFrameExtractor
+from endo_ai.predictor.model_loader import MultiLabelClassificationNet
 
 from icecream import ic
 
 # Example usage:
-# devenv shell
 # python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
+
+FPS = 50
+SMOOTH_WINDOW_SIZE_S = 1
+MIN_SEQ_LEN_S = 0.5
+crop_template = [0, 1080, 550, 1920 - 20]  # [top, bottom, left, right]
 
 
 class Command(BaseCommand):
@@ -77,6 +82,14 @@ class Command(BaseCommand):
             help="Save the video file to the video directory",
         )
 
+        # model_path
+        parser.add_argument(
+            "--model_path",
+            type=str,
+            default="./data/models/colo_segmentation_RegNetX800MF_6.ckpt",
+            help="Path to the model file",
+        )
+
     def handle(self, *args, **options):
         verbose = True
         center_name = options["center_name"]
@@ -137,3 +150,5 @@ class Command(BaseCommand):
         video_file_obj.extract_frames(quality=2, overwrite=False, ext="jpg")
 
         video_file_obj.update_text_metadata(ocr_frame_fraction=0.001)
+
+        video_file_obj.generate_anonymized_frames()
