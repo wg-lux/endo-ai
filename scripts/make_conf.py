@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from endoreg_db_api.utils import DbConfig
+from endoreg_db.utils import DbConfig
 
 TEMPLATE_DIR = Path("./conf_template")
 CONF_DIR = Path("./conf")
