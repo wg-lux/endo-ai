@@ -2,6 +2,7 @@ endoreg_db_production/
 endoreg_db_api_production/
 agl_frame_extractor/
 
+conf/
 data_anonym/
 data/
 model/*
