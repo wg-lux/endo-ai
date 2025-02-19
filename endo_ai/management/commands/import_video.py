@@ -107,7 +107,7 @@ class Command(BaseCommand):
         # Make sure the video file exists
         video_file = Path(video_file).expanduser()
         if not video_file.exists():
-            self.stdout.write(self.style.ERROR(f"Video file not found: {video_file}"))
+            self.stdout.write(self.style.ERROR(f"Video file not found: {video_file}"))  # pylint: disable=no-member
             return
 
         # Make sure the frame directory exists

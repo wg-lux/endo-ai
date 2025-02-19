@@ -85,6 +85,7 @@ in
     ensure-dirs 
 
     uv pip install -e .
+    
     if [ -d "${endoregDbRepoDir}/.git" ]; then
       cd ${endoregDbRepoDir} && git pull && cd ..
     else
