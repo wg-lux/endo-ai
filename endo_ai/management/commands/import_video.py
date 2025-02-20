@@ -54,7 +54,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--frame_dir_root",
             type=str,
-            default="~/test_data/db_frame_dir",
+            default="~/test-data/db_frame_dir",
             help="Path to the frame directory",
         )
 
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--video_dir_root",
             type=str,
-            default="~/test_data/db_video_dir",
+            default="~/test-data/db_video_dir",
             help="Path to the video directory",
         )
 

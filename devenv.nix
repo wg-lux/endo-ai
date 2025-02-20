@@ -73,6 +73,7 @@ in
 
   scripts.env-setup.exec = ''
     export CONF_DIR="/var/endo-ai/data"
+    export PSEUDO_DIR="/var/endo-ai/data"
     export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_dev"
     export DJANGO_DEBUG="True"
     export LD_LIBRARY_PATH="${
