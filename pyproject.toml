@@ -4,23 +4,29 @@ version = "0.1.0"
 description = "EndoReg Db API Service"
 readme = "README.md"
 requires-python = ">=3.11"
+
+# django-cors-headers==4.7.0
+#  - django-extensions==3.2.3
+#  - endo-ai==0.1.0 (from file:///home/admin/dev/endo-ai)
+#  - endoreg-db==0.5.3 (from file:///home/admin/dev/endo-ai/endoreg_db_production)
+#  - endoreg-db-api==0.1.0 (from file:///home/admin/dev/endo-ai/endoreg_db_api_production)
+
+
 dependencies = [
-    "agl-frame-extractor>=0.2.1",
+    "agl-frame-extractor",
     "albumentations",
     "asgiref",
     "certifi",
-    "channels>=4.2.0",
-    "daphne>=4.1.2",
-    "django>=5.1.3",
+    "channels",
+    "daphne",
+    "django",
     "endoreg-db",
-    "endoreg-db-api",
-    # "endoreg-db>=0.5.3",
     "icecream",
-    "opencv-python>=4.11.0.86",
-    "psycopg[binary]>=3.2.3",
+    "opencv-python",
+    "psycopg[binary]",
     "pydantic",
     "python-ffmpeg",
-    "pytorch-lightning>=2.5.0.post0",
+    "pytorch-lightning",
     "pyyaml",
     "scipy",
     "torch",
@@ -33,7 +39,6 @@ dependencies = [
 packages = ["endo_ai"]
 
 [tool.uv.sources]
-endoreg-db-api = { path = "endoreg_db_api_production" }
 endoreg-db = { path = "endoreg_db_production" }
 agl-frame-extractor = { path = "agl_frame_extractor" }
 endo-ai = { path = "endo_ai" }

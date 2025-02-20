@@ -84,6 +84,7 @@ in
 
   scripts.init-environment.exec = ''
     ensure-dirs 
+    init-lxdb-config
 
     uv pip install -e .
     
@@ -95,13 +96,13 @@ in
     
     uv pip install -e ${endoregDbRepoDir}/. 
 
-    if [ -d "${endoregDbApiRepoDir}/.git" ]; then
-      cd ${endoregDbApiRepoDir} && git pull && cd ..
-    else
-      git clone https://github.com/wg-lux/endoreg-db-api ./${endoregDbApiRepoDir}
-    fi
+    # if [ -d "${endoregDbApiRepoDir}/.git" ]; then
+    #   cd ${endoregDbApiRepoDir} && git pull && cd ..
+    # else
+    #   git clone https://github.com/wg-lux/endoreg-db-api ./${endoregDbApiRepoDir}
+    # fi
 
-    uv pip install -e ${endoregDbApiRepoDir}/.
+    # uv pip install -e ${endoregDbApiRepoDir}/.
 
     if [ -d "${aglFrameExtractorRepoDir}/.git" ]; then
       cd ${aglFrameExtractorRepoDir} && git pull && cd ..
@@ -120,6 +121,11 @@ in
   '';
 
   scripts.init-lxdb-config.exec = ''
+  # if /etc/secrets/vault/SCRT_local_password_maintenance_password doesnt exist, we need to create it
+    if [ ! -f "/etc/secrets/vault/SCRT_local_password_maintenance_password" ]; then
+      echo "CHANGEME" > /etc/secrets/vault/SCRT_local_password_maintenance_password
+    fi
+    
     devenv tasks run deploy:init-conf
   '';
 
@@ -150,11 +156,11 @@ in
     cd ..
   '';
 
-  scripts.install-api.exec = ''
-    init-lxdb-config
-    check-psql
-    init-data
-  '';
+  # scripts.install-api.exec = ''
+  #   init-lxdb-config
+  #   check-psql
+  #   init-data
+  # '';
 
 
   tasks = {
