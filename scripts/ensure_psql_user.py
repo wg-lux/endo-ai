@@ -1,4 +1,4 @@
-from endoreg_db_api.utils import DbConfig
+from endoreg_db.models import DbConfig
 from icecream import ic
 
 db_cfg = DbConfig.from_file("./conf/db.yaml")
