@@ -9,6 +9,7 @@ from icecream import ic
 
 # Example usage:
 # python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
+# python manage.py import_video ~/test-data/video/NINJAU_S001_S001_T026.MOV
 
 FPS = 50
 SMOOTH_WINDOW_SIZE_S = 1
