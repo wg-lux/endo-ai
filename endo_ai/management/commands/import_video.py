@@ -1,11 +1,15 @@
-from django.core.management import BaseCommand, call_command
+"""
+Management command to import a video file to the database.
+"""
+
 from io import StringIO
 from pathlib import Path
-from endoreg_db.models import RawVideoFile, Center, EndoscopyProcessor
-from agl_frame_extractor import VideoFrameExtractor
-from endo_ai.predictor.model_loader import MultiLabelClassificationNet
-
-from icecream import ic
+from django.core.management import BaseCommand
+from endoreg_db.models import (
+    RawVideoFile,
+    Center,
+    EndoscopyProcessor,
+)
 
 # Example usage:
 # python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
@@ -18,6 +22,8 @@ crop_template = [0, 1080, 550, 1920 - 20]  # [top, bottom, left, right]
 
 
 class Command(BaseCommand):
+    """Management Command to import a video file to the database"""
+
     help = """
         Imports a .mov file to the database.
         1. Get center by center name from db (default: university_hospital_wuerzburg)
