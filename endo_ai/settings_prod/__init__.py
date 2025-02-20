@@ -1,5 +1,5 @@
 import os
-from endoreg_db_api.utils import DbConfig
+from endoreg_db.models import DbConfig
 from endoreg_db_api.settings_base import (
     BASE_DIR,
     CONF_DIR,
