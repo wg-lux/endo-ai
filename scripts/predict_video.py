@@ -1,10 +1,11 @@
 """Sample Script to predict a frame using the trained model"""
 
+import json
 from pathlib import Path
 from icecream import ic
-from PIL import Image
 from torchvision import transforms
-import json
+import numpy as np
+import ssl
 
 from endo_ai.predictor.model_loader import MultiLabelClassificationNet
 
@@ -15,9 +16,7 @@ from endo_ai.predictor.postprocess import (
     make_smooth_preds,
     find_true_pred_sequences,
 )
-import numpy as np
 
-import ssl
 
 ic(ssl.get_default_verify_paths())
 
@@ -111,7 +110,7 @@ classifier = Classifier(model, verbose=True)
 predictions = classifier.pipe(string_paths, crops)
 readable_predictions = [classifier.readable(p) for p in predictions]
 
-with open(PRED_OUTPUT_PATH, "w") as f:
+with open(PRED_OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(classifier.get_prediction_dict(predictions, string_paths), f, indent=2)
 
 with open(READABLE_PRED_OUTPUT_PATH, "w", encoding="utf-8") as f:
