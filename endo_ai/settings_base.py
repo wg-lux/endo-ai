@@ -51,6 +51,10 @@ for p in STATICFILES_DIRS:
 # WhiteNoise configuration to automatically compress and cache files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Media files
+MEDIA_ROOT = PSEUDO_DIR
+MEDIA_URL = "/media/"
+
 # Application definition
 
 INSTALLED_APPS = [
