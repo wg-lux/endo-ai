@@ -20,6 +20,12 @@ from endo_ai.predictor.postprocess import (
 
 ic(ssl.get_default_verify_paths())
 
+import ffmpeg
+
+probe = ffmpeg.probe(
+    "/home/admin/test-data/db_video_dir/138c846e-649a-40eb-84d6-633c99f7e704.mp4"
+)
+
 ################################# UPDATE #################################
 VIDEO_UUID = "68a175cd-a66b-4f23-b255-d423052ed613"
 ###########################################################################

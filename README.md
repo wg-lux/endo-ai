@@ -1,18 +1,52 @@
 # endo-ai
 
+## Prepare sqlite database
+
+We use settings_dev and therefore the local sqlite db file.
+
+For a clean testing run, delete the existing db.sqlite3 file and create a new one
+
+```zsh
+rm db.sqlite3
+python manage.py migrate
+python manage.py load_base_db_data
+```
+
 ## Import Video
 
 python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
 
 copy uuid of raw_video_file, e.g. from:
-138c846e-649a-40eb-84d6-633c99f7e704
+24e48a61-844a-4f16-9d24-66f00a5eb585
 
 ## Create a new ModelMeta Object
 
 ModelMeta objects store the models weights file and Metadata like the used labelset.
 They have a ForeignKey relationship to an AiModel. AiModel Objects store information about the type of model and how it is used to process videos (e.g., the VideoSegmentationLabelSet)
 
-run: python manage.py create_multilabel_model_meta --model_path "./data/models/colo_segmentation_RegNetX800MF_6.ckpt"
+run:
+
+```zsh
+python manage.py create_multilabel_model_meta --model_path "./data/models/colo_segmentation_RegNetX800MF_6.ckpt"
+```
+
+## Predict Video
+
+Use UUID from above
+
+```zsh
+python manage.py predict_raw_video_file --raw_video_uuid 24e48a61-844a-4f16-9d24-66f00a5eb585
+
+```
+
+## Create Anonymized Video
+
+```zsh
+python manage.py censor_outside --raw_video_uuid 24e48a61-844a-4f16-9d24-66f00a5eb585
+
+```
+
+#####
 
 ## set active model meta
 

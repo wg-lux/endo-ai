@@ -1,22 +1,14 @@
-# from io import StringIO
-# from pathlib import Path
 from icecream import ic
 
 from django.core.management import BaseCommand  # , call_command
 from endoreg_db.models import (
-    # VideoSegmentationLabel,
-    # LabelSet,
-    # AiModel,
     ModelMeta,
     RawVideoFile,
 )
 
-# from agl_frame_extractor import VideoFrameExtractor
-# from endo_ai.predictor.model_loader import MultiLabelClassificationNet
-
 
 # Example usage:
-# python manage.py set_active_meta --model_name image_multilabel_classification_colonoscopy_default
+# python manage.py predict_raw_video_file --raw_video_uuid 138c846e649a40eb84d6633c99f7e704 --model_meta_version 7 --test_run
 
 
 class Command(BaseCommand):
