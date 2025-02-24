@@ -31,6 +31,8 @@ model file at: './data/models/colo_segmentation_RegNetX800MF_6.ckpt'
 
 test video at: '~/test-data/video/lux-gastro-video.mp4'
 
+/home/admin/test-data/video/lux-gastro-video.mp4
+
 ## Prepare sqlite database
 
 We use settings_dev and therefore the local sqlite db file.
@@ -47,8 +49,8 @@ python manage.py load_base_db_data
 
 python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
 
-copy uuid of raw_video_file, e.g. from:
-24e48a61-844a-4f16-9d24-66f00a5eb585
+copy uuid of raw_video_file, e.g.
+897703d7-a870-4c6c-a4a5-344ef52bc271
 
 ## Create a new ModelMeta Object
 
@@ -66,8 +68,7 @@ python manage.py create_multilabel_model_meta --model_path "./data/models/colo_s
 Use UUID from above
 
 ```zsh
-python manage.py predict_raw_video_file --raw_video_uuid 695754bb-32ee-46bd-8beb-8cc36760adc1
-                                                            # 695754bb32ee46bd8beb8cc36760adc1
+python manage.py predict_raw_video_file --raw_video_uuid 897703d7-a870-4c6c-a4a5-344ef52bc271
 
 ```
 
