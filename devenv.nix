@@ -39,7 +39,8 @@ in
   packages = with pkgs; [
     cudaPackages.cuda_nvcc
     stdenv.cc.cc
-    ffmpeg_6-full
+    # ffmpeg_6-full
+    ffmpeg-headless.bin
     tesseract
   ];
 
