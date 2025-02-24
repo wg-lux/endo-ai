@@ -1,5 +1,36 @@
 # endo-ai
 
+## Notes
+
+ToDo:
+
+- add labelset: "gg-pilot-paris", "gg-pilot-nice"
+- add labels for those labelsets
+- annotation should allow for "i dont know / skip" and "no polyp"
+
+- Autoselect 1 polyp image per sequence per second (more or less random)
+  - should not have label "outside"
+  - EXTRA: 1 with predicted label nbi and one without predicted label nbi
+  - Use the image with nbi for annotation of NICE classification
+  - Use the image without nbi for annotation of Paris classification
+
+To close the loop until re-training:
+
+- Create script which automatically sets the label "polyp" to true in each \
+  image with a annotation for one the NICE / Paris labels
+
+## Important Methods / Files / Classes
+
+endoreg_db_production/endoreg_db/models/data_file/base_classes/abstract_video.py
+endoreg_db_production/endoreg_db/models/data_file/import_classes/raw_video.py
+endoreg_db_production/endoreg_db/models/data_file/base_classes/utils.py
+
+## Requirements
+
+model file at: './data/models/colo_segmentation_RegNetX800MF_6.ckpt'
+
+test video at: '~/test-data/video/lux-gastro-video.mp4'
+
 ## Prepare sqlite database
 
 We use settings_dev and therefore the local sqlite db file.
@@ -35,14 +66,15 @@ python manage.py create_multilabel_model_meta --model_path "./data/models/colo_s
 Use UUID from above
 
 ```zsh
-python manage.py predict_raw_video_file --raw_video_uuid 24e48a61-844a-4f16-9d24-66f00a5eb585
+python manage.py predict_raw_video_file --raw_video_uuid 695754bb-32ee-46bd-8beb-8cc36760adc1
+                                                            # 695754bb32ee46bd8beb8cc36760adc1
 
 ```
 
 ## Create Anonymized Video
 
 ```zsh
-python manage.py censor_outside --raw_video_uuid 24e48a61-844a-4f16-9d24-66f00a5eb585
+python manage.py censor_outside --raw_video_uuid 695754bb-32ee-46bd-8beb-8cc36760adc1
 
 ```
 
