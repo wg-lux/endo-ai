@@ -62,5 +62,5 @@ class Command(BaseCommand):
 
         assert raw_video_object is not None, "Raw video not found"
 
-        # raw_video_object.censor_outside_frames()
+        raw_video_object.censor_outside_frames()
         raw_video_object.make_anonymized_video()
