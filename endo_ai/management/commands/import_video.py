@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
         # add the path to the video file
         parser.add_argument(
-            "--video_file",
+            "video_file",
             type=str,
             help="Path to the video file to import",
         )
