@@ -41,8 +41,7 @@ For a clean testing run, delete the existing db.sqlite3 file and create a new on
 
 ```zsh
 rm db.sqlite3
-python manage.py migrate
-python manage.py load_base_db_data
+init-data
 ```
 
 ## Import Video
