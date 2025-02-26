@@ -42,6 +42,7 @@ in
     # ffmpeg_6-full
     ffmpeg-headless.bin
     tesseract
+    pkgs.zsh
   ];
 
   env = {
@@ -65,13 +66,18 @@ in
     };
   };
 
+  scripts.hello.package = pkgs.zsh;
   scripts.hello.exec = "${pkgs.uv}/bin/uv run python hello.py";
+  
+  scripts.run-dev-server.package = pkgs.zsh;
   scripts.run-dev-server.exec =
     "${pkgs.uv}/bin/uv run python manage.py runserver localhost:${toString port}";
 
+  scripts.run-prod-server.package = pkgs.zsh;
   scripts.run-prod-server.exec =
     "${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application";
 
+  scripts.env-setup.package = pkgs.zsh;
   scripts.env-setup.exec = ''
     export CONF_DIR="/var/endo-ai/data"
     export PSEUDO_DIR="/var/endo-ai/data"
@@ -83,7 +89,8 @@ in
     }:/run/opengl-driver/lib:/run/opengl-driver-32/lib"
   '';
 
-  scripts.init-environment.exec = ''
+  scripts.init-env.package = pkgs.zsh;
+  scripts.init-env.exec =''
     ensure-dirs 
     init-lxdb-config
 
@@ -113,14 +120,16 @@ in
 
     uv pip install -e ${aglFrameExtractorRepoDir}/.
 
-    devenv tasks run deploy:make-migrations
-    devenv tasks run deploy:migrate
+    # devenv tasks run deploy:make-migrations
+    # devenv tasks run deploy:migrate
   '';
 
+  scripts.check-psql.package = pkgs.zsh;
   scripts.check-psql.exec = ''
     devenv tasks run deploy:ensure-psql-user
   '';
 
+  scripts.init-lxdb-config.package = pkgs.zsh;
   scripts.init-lxdb-config.exec = ''
   # if /etc/secrets/vault/SCRT_local_password_maintenance_password doesnt exist, we need to create it
     if [ ! -f "/etc/secrets/vault/SCRT_local_password_maintenance_password" ]; then
@@ -130,13 +139,15 @@ in
     devenv tasks run deploy:init-conf
   '';
 
+  scripts.init-data.package = pkgs.zsh;
   scripts.init-data.exec = ''
-    export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_prod"
+    # export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_prod"
     devenv tasks run deploy:make-migrations
     devenv tasks run deploy:migrate
     devenv tasks run deploy:load-base-db-data
   '';
 
+  scripts.ensure-dirs.package = pkgs.zsh;
   scripts.ensure-dirs.exec = ''
     mkdir -p ${dataDir}
     mkdir -p ${importDir}
@@ -151,6 +162,7 @@ in
     chmod -R 700 ${dataDir}
     '';
 
+  scripts.test-local-endoreg-db.package = pkgs.zsh;
   scripts.test-local-endoreg-db.exec = ''
     cd ${endoregDbRepoDir}
     devenv shell -i runtests
@@ -184,6 +196,6 @@ in
 
   enterShell = ''
     . .devenv/state/venv/bin/activate
-    init-environment
+    # init-env
   '';
 }
