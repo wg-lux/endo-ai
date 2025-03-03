@@ -89,6 +89,11 @@ in
     }:/run/opengl-driver/lib:/run/opengl-driver-32/lib"
   '';
 
+  scripts.transcode-videos-in-dir.package = pkgs.zsh;
+  scripts.transcode-videos-in-dir.exec = ''
+      ./scripts/transcode_videos.sh
+    '';
+
   scripts.init-env.package = pkgs.zsh;
   scripts.init-env.exec =''
     ensure-dirs 
