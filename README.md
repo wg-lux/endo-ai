@@ -1,5 +1,70 @@
 # endo-ai
 
+## Pipeline
+
+### Requirements
+
+1. Create `.env` file
+
+```env
+DJANGO_SALT=HighlySecureSalt
+```
+
+2. Download TestData
+   Access the shared "ColoReg" folder in our Nextcloud and copy the test-data directory to your home directory.
+
+### Setup
+
+_Environment_
+
+- run `direnv allow`
+  - will initially fail
+  - run `init-env`
+  - run `uv sync`
+  - run `direnv reload`
+
+_Database_
+
+- (if pre-existing, run `rm db.sqlite3`)
+- `python manage.py migrate`
+- `python manage.py load_base_db_data`
+
+_Import AI Model_
+run `python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"`
+
+_Import Report_
+run `python manage.py import_report ~/test-data/report/lux-gastro-report.pdf`
+
+_Import Video_
+run `python manage.py import_video ~/test-data/video/lux-gastro-video.mp4`
+-> Copy UUID of the created RawVideoFile, e.g.:
+
+`Saved db_video_dir/f0e94e7f-3342-430d-a07a-836f07864990.mp4`
+-> `f0e94e7f-3342-430d-a07a-836f07864990`
+
+```zsh
+
+```
+
+_Predict Video_
+**KNOWN ISSUE:**
+If we need to download base models, the command needs to be run in devenv shell to find correct ca files
+
+run `devenv shell`
+run `export RAW_VID_UUID=f0e94e7f-3342-430d-a07a-836f07864990`
+run `python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID`
+
+_Remove Outside Regions_
+**In Production, we will neeed to validate Predictions and migrate the pipeline to use annotations instead of predictions**
+
+run `python manage.py censor_outside --raw_video_uuid $RAW_VID_UUID`
+
+_Assign Pseudo Patient to SensitiveMeta_
+**In Production, we will neeed to validate Predictions and migrate the pipeline to use annotations instead of predictions**
+
+_Assign Examination to PseudoPatients_
+create
+
 ## Notes
 
 ToDo:
@@ -20,6 +85,15 @@ To close the loop until re-training:
   image with a annotation for one the NICE / Paris labels
 
 ## Important Methods / Files / Classes
+
+Create ".env"
+
+```env
+DJANGO_SALT=YourSecureSalt
+```
+
+DJANGO_SALT is used to generate hashes.
+If it changes, generated hashes will differ and new reports of existing patients wont be mergable with existing hashes.
 
 endoreg_db_production/endoreg_db/models/data_file/base_classes/abstract_video.py
 endoreg_db_production/endoreg_db/models/data_file/import_classes/raw_video.py

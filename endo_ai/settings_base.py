@@ -22,6 +22,10 @@ PSEUDO_DIR = Path(os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data"))
 
 sys.path.insert(0, str(BASE_DIR / "endoreg-db-production"))
 
+SECRET_SALT = os.environ.get(
+    "DJANGO_SECRET_SALT",
+    "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/

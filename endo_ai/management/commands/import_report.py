@@ -49,6 +49,13 @@ class Command(BaseCommand):
             help="Name of the center to associate with the video",
         )
 
+        parser.add_argument(
+            "--report_dir_root",
+            type=str,
+            default="~/test-data/db_report_dir",
+            help="Path to the frame directory",
+        )
+
         # delete source
         parser.add_argument(
             "--delete_source",
@@ -67,6 +74,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         verbose = True
         center_name = options["center_name"]
+        dir = options["report_dir_root"]
         file_path = options["file_path"]
         delete_source = options["delete_source"]
         save = options["save"]
@@ -82,8 +90,8 @@ class Command(BaseCommand):
             return
 
         # # Make sure the Pdf directory exists
-        # report_dir_root = Path(report_dir_root).expanduser()
-        # report_dir_root.mkdir(parents=True, exist_ok=True)
+        dir = Path(dir).expanduser()
+        dir.mkdir(parents=True, exist_ok=True)
 
         # Create the video file object
         report_file_obj = RawPdfFile.create_from_file(
