@@ -3,6 +3,7 @@ endoreg_db_api_production/
 agl_frame_extractor/
 
 ./erc_data/
+./erc-data/
 
 conf/
 data_anonym/

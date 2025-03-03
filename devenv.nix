@@ -32,7 +32,7 @@ in
 {
 
   # A dotenv file was found, while dotenv integration is currently not enabled.
-  dotenv.enable = false;
+  dotenv.enable = true;
   dotenv.disableHint = true;
 
 
@@ -55,7 +55,6 @@ in
     DJANGO_DEBUG = "True";
     DJANGO_SETTINGS_MODULE = "${DJANGO_MODULE}.settings_dev";
     # SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-
   };
 
   languages.python = {
