@@ -35,8 +35,7 @@ SECRET_SALT = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 CONF_DIR = Path(os.environ.get("CONF_DIR", "./conf"))
-
-assert CONF_DIR.exists(), f"Missing Config Directory {CONF_DIR}"
+CONF_DIR.mkdir(parents=True, exist_ok=True)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
