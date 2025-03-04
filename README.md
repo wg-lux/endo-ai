@@ -152,6 +152,8 @@ python manage.py censor_outside --raw_video_uuid 695754bb-32ee-46bd-8beb-8cc3676
 
 ```
 
+## Generate ReportFile from RawPdfFile
+
 #####
 
 ## set active model meta
