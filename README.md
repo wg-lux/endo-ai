@@ -48,7 +48,7 @@ If we need to download base models, the command needs to be run in devenv shell 
 For ffmpeg to work, we also need to operate within devenv shell
 
 run `devenv shell`
-run `export RAW_VID_UUID=c391b1d0-3e6a-4353-939c-07f02c667fea`
+run `export RAW_VID_UUID=adbbf1ef-ec72-492e-a572-21909e0ccc37`
 run `python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID`
 
 _Remove Outside Regions_
@@ -64,6 +64,10 @@ run `python manage.py create_pseudo_examinations`
 _Create Report File_
 **In Production, we need to make sure that sensitive Meta of the RawPdfFile is already validated**
 run `python manage.py create_anonym_reports`
+
+_Create Video_
+**In Production, we need to make sure that sensitive meta and Outside segments are validated**
+run `python manage.py create_anonym_videos`
 
 ## Notes
 
