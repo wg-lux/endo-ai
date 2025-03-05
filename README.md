@@ -1,5 +1,5 @@
 # endo-ai
-
+endo_ai/predictor/postprocess.py
 Summary Script
 
 ```zsh
@@ -16,10 +16,10 @@ get raw video uuid
 db_video_dir/b1f3e91c-a5f1-4c58-ba40-3629f52e7ac8.mp4
 
 ```zsh
-export RAW_VID_UUID=b1f3e91c-a5f1-4c58-ba40-3629f52e7ac8
+export RAW_VID_UUID=45f1a35b-9d2f-4dc3-860c-cc42f15b5625
 python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
-python manage.py create_pseudo_patients
-python manage.py create_pseudo_examinations
+python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
+python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
 python manage.py create_anonym_reports
 python manage.py create_anonym_videos
 python manage.py export_patients
