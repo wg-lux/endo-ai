@@ -5,6 +5,7 @@ Summary Script
 ```zsh
 rm db.sqlite3
 init-env
+python manage.py migrate
 python manage.py load_base_db_data
 python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
 python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
