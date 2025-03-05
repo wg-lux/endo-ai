@@ -97,7 +97,6 @@ in
   scripts.init-env.package = pkgs.zsh;
   scripts.init-env.exec =''
     ensure-dirs 
-    init-lxdb-config
 
     uv pip install -e .
     
@@ -125,6 +124,7 @@ in
 
     uv pip install -e ${aglFrameExtractorRepoDir}/.
 
+    init-lxdb-config
     # devenv tasks run deploy:make-migrations
     # devenv tasks run deploy:migrate
   '';

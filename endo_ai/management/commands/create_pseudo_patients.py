@@ -11,11 +11,6 @@ from icecream import ic
 # Example usage:
 # python manage.py create_pseudo_patients
 
-FPS = 50
-SMOOTH_WINDOW_SIZE_S = 1
-MIN_SEQ_LEN_S = 0.5
-crop_template = [0, 1080, 550, 1920 - 20]  # [top, bottom, left, right]
-
 
 class Command(BaseCommand):
     """Management Command to import a video file to the database"""

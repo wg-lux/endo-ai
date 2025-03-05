@@ -42,10 +42,6 @@ run `python manage.py import_video ~/test-data/video/lux-gastro-video.mp4`
 `Saved db_video_dir/c391b1d0-3e6a-4353-939c-07f02c667fea.mp4`
 -> `c391b1d0-3e6a-4353-939c-07f02c667fea`
 
-```zsh
-
-```
-
 _Predict Video_
 **KNOWN ISSUE:**
 If we need to download base models, the command needs to be run in devenv shell to find correct ca files
@@ -62,6 +58,12 @@ run `python manage.py censor_outside --raw_video_uuid $RAW_VID_UUID`
 
 _Create Patients and Examinations from Sensitive Meta_
 **In Production, we will create patients and examinations after validating patient names, dob, and examination date from the SensitiveMeta's RawPdfFile or RawVideoFile**
+run `python manage.py create_pseudo_patients`
+run `python manage.py create_pseudo_examinations`
+
+_Create Report File_
+**In Production, we need to make sure that sensitive Meta of the RawPdfFile is already validated**
+run `python manage.py create_anonym_reports`
 
 ## Notes
 
