@@ -1,13 +1,13 @@
 # from io import StringIO
 # from pathlib import Path
-from icecream import ic
+# from icecream import ic
 
 from django.core.management import BaseCommand  # , call_command
 from endoreg_db.models import (
     # VideoSegmentationLabel,
     # LabelSet,
     # AiModel,
-    ModelMeta,
+    # ModelMeta,
     RawVideoFile,
 )
 

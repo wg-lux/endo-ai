@@ -2,19 +2,14 @@
 Management command to import a video file to the database.
 """
 
-from io import StringIO
-from pathlib import Path
+# from io import StringIO
+# from pathlib import Path
 from django.core.management import BaseCommand
 from endoreg_db.models import SensitiveMeta, PatientExamination
 from icecream import ic
 
 # Example usage:
-# python manage.py create_pseudo_patients
-
-FPS = 50
-SMOOTH_WINDOW_SIZE_S = 1
-MIN_SEQ_LEN_S = 0.5
-crop_template = [0, 1080, 550, 1920 - 20]  # [top, bottom, left, right]
+# python manage.py create_pseudo_examinations
 
 
 class Command(BaseCommand):
@@ -33,10 +28,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        verbose = True
+        _verbose = True
         sensitive_metas = SensitiveMeta.objects.all()
         for sensitive_meta in sensitive_metas:
-            patient = sensitive_meta.get_or_create_pseudo_patient_examination()
+            _examination = sensitive_meta.get_or_create_pseudo_patient_examination()
 
         examinations = PatientExamination.objects.all()
         for i, ex in enumerate(examinations):
