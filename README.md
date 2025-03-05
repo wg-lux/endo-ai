@@ -1,5 +1,29 @@
 # endo-ai
 
+Summary Script
+
+```zsh
+rm db.sqlite3
+python manage.py migrate
+python manage.py load_base_db_data
+python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
+python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
+python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
+```
+
+get raw video uuid
+db_video_dir/b1f3e91c-a5f1-4c58-ba40-3629f52e7ac8.mp4
+
+```zsh
+export RAW_VID_UUID=b1f3e91c-a5f1-4c58-ba40-3629f52e7ac8
+python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
+python manage.py create_pseudo_patients
+python manage.py create_pseudo_examinations
+python manage.py create_anonym_reports
+python manage.py create_anonym_videos
+python manage.py export_patients
+```
+
 ## Pipeline
 
 ### Requirements
