@@ -60,16 +60,14 @@ _Remove Outside Regions_
 
 run `python manage.py censor_outside --raw_video_uuid $RAW_VID_UUID`
 
-_Assign Pseudo Patient to SensitiveMeta_
-**In Production, we will neeed to validate Predictions and migrate the pipeline to use annotations instead of predictions**
-
-_Assign Examination to PseudoPatients_
-create
+_Create Patients and Examinations from Sensitive Meta_
+**In Production, we will create patients and examinations after validating patient names, dob, and examination date from the SensitiveMeta's RawPdfFile or RawVideoFile**
 
 ## Notes
 
 ToDo:
 
+- autodocs / Sphinx
 - add labelset: "gg-pilot-paris", "gg-pilot-nice"
 - add labels for those labelsets
 - annotation should allow for "i dont know / skip" and "no polyp"
