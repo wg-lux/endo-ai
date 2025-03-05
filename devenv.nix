@@ -35,6 +35,7 @@ in
   dotenv.enable = true;
   dotenv.disableHint = true;
 
+  # shell = lib.mkForce pkgs.zsh;
 
   packages = with pkgs; [
     cudaPackages.cuda_nvcc
