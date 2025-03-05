@@ -19,7 +19,6 @@ examples/*
 __pycache__/
 *.py[cod]
 *$py.class
-.vscode
 predictions.json
 model/*
 

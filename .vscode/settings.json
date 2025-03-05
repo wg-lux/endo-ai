@@ -1,0 +1,6 @@
+{
+  "python.linting.pylintArgs": ["--rcfile", "${workspaceFolder}/.pylintrc"],
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.analysis.extraPaths": ["./endoreg_db_production"]
+}
