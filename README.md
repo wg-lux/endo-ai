@@ -39,8 +39,8 @@ _Import Video_
 run `python manage.py import_video ~/test-data/video/lux-gastro-video.mp4`
 -> Copy UUID of the created RawVideoFile, e.g.:
 
-`Saved db_video_dir/f0e94e7f-3342-430d-a07a-836f07864990.mp4`
--> `f0e94e7f-3342-430d-a07a-836f07864990`
+`Saved db_video_dir/c391b1d0-3e6a-4353-939c-07f02c667fea.mp4`
+-> `c391b1d0-3e6a-4353-939c-07f02c667fea`
 
 ```zsh
 
@@ -49,9 +49,10 @@ run `python manage.py import_video ~/test-data/video/lux-gastro-video.mp4`
 _Predict Video_
 **KNOWN ISSUE:**
 If we need to download base models, the command needs to be run in devenv shell to find correct ca files
+For ffmpeg to work, we also need to operate within devenv shell
 
 run `devenv shell`
-run `export RAW_VID_UUID=f0e94e7f-3342-430d-a07a-836f07864990`
+run `export RAW_VID_UUID=c391b1d0-3e6a-4353-939c-07f02c667fea`
 run `python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID`
 
 _Remove Outside Regions_
