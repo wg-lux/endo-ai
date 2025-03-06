@@ -1,4 +1,5 @@
 # endo-ai
+
 endo_ai/predictor/postprocess.py
 Summary Script
 
@@ -93,6 +94,44 @@ run `python manage.py create_anonym_reports`
 _Create Video_
 **In Production, we need to make sure that sensitive meta and Outside segments are validated**
 run `python manage.py create_anonym_videos`
+
+# Working With Specific Objects
+
+## Video
+
+- extract frames:
+
+```python
+from endoreg_db.models import Video
+from icecream import ic
+v = Video.objects.first()
+
+# Extract basic Video Info
+v.initialize_video_specs() # set fps, height, duration, width
+v.sync_from_raw_video() # set predictions, readable_predictions, sequences, and some states from raw video file
+
+# v.extract_all_frames()
+ic(v)
+
+# get single frame
+f = v.get_frame(50)
+ic(f)
+assert f.frame_number==50
+
+# get annotations
+annotations = f.get_classification_annotations()
+annotations = f.get_classification_annotations_by_label_and_value()
+annotations = f.get_classification_annotations_by_value()
+
+
+# Get Predictions
+predictions =
+
+ff = v.get_frame_range(10,15)
+
+
+n_frames_db = v.get_frame_number()
+```
 
 ## Notes
 
