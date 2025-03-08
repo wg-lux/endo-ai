@@ -116,13 +116,18 @@ v = Video.objects.first()
 v.initialize_video_specs() # set fps, height, duration, width
 v.sync_from_raw_video() # set predictions, readable_predictions, sequences, and some states from raw video file
 
-# v.extract_all_frames()
+v.extract_all_frames()
 ic(v)
 
 # get single frame
 f = v.get_frame(50)
 ic(f)
 assert f.frame_number==50
+
+# Get Video Label Segments
+lss = v.label_video_segments.all()
+ls = lss[0]
+ic(ls)
 
 # get annotations
 annotations = f.get_classification_annotations()
@@ -131,7 +136,7 @@ annotations = f.get_classification_annotations_by_value()
 
 
 # Get Predictions
-predictions =
+# predictions =
 
 ff = v.get_frame_range(10,15)
 
