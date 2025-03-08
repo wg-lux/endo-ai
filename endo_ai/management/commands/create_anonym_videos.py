@@ -37,3 +37,4 @@ class Command(BaseCommand):
             raw_video.censor_outside_frames()
             video = raw_video.get_or_create_video()
             ic(video)
+            video.sync_from_raw_video()

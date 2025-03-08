@@ -14,10 +14,10 @@ python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
 ```
 
 get raw video uuid
-db_video_dir/b1f3e91c-a5f1-4c58-ba40-3629f52e7ac8.mp4
+db_video_dir/634406c1-251a-4ec5-90d8-68431aa24f4c.mp4
 
 ```zsh
-export RAW_VID_UUID=45f1a35b-9d2f-4dc3-860c-cc42f15b5625
+export RAW_VID_UUID=a7852405-bb23-4ef9-b8bd-9018115a11de
 python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
 python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
 python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
@@ -26,15 +26,19 @@ python manage.py create_anonym_videos
 python manage.py export_patients
 ```
 
+```python
+from endoreg_db.models import LabelRawVideoSegment
+from icecream import ic
+lvss = LabelRawVideoSegment.objects.all()
+lvs = lvss[2]
+ic(f"Segment length in s: {lvs.get_segment_len_in_s()}")
+```
+
 ## Pipeline
 
 ### Requirements
 
-1. Create `.env` file
-
-```env
-DJANGO_SALT=HighlySecureSalt
-```
+1. Create `.env` file (See `./conf/default.env` as example)
 
 2. Download TestData
    Access the shared "ColoReg" folder in our Nextcloud and copy the test-data directory to your home directory.
@@ -94,6 +98,8 @@ run `python manage.py create_anonym_reports`
 _Create Video_
 **In Production, we need to make sure that sensitive meta and Outside segments are validated**
 run `python manage.py create_anonym_videos`
+
+### ToDo
 
 # Working With Specific Objects
 
