@@ -7,6 +7,8 @@ import torch
 from torch.utils.data import DataLoader
 from torch import nn
 import numpy as np
+from tqdm import tqdm
+from icecream import ic
 from .inference_dataset import InferenceDataset
 from .postprocess import concat_pred_dicts, make_smooth_preds, find_true_pred_sequences
 
@@ -66,7 +68,7 @@ class Classifier:
 
         dataset = InferenceDataset(paths, crops, self.config)
         if verbose:
-            print("Dataset created")
+            ic("Dataset created")
 
         dl = DataLoader(
             dataset=dataset,
@@ -76,21 +78,19 @@ class Classifier:
             pin_memory=True,
         )
         if verbose:
-            print("Dataloader created")
+            ic("Dataloader created")
 
         predictions = []
 
         with torch.inference_mode():
             if self.verbose:
-                print("Starting inference")
-            for i, batch in enumerate(dl):
+                ic("Starting inference")
+            for batch in tqdm(dl):
                 prediction = self.model(batch.cuda())
                 prediction = (
                     self.config["activation"](prediction).cpu().tolist()
                 )  # .numpy().tolist()
                 predictions += prediction
-                if self.verbose and i == 0:
-                    print("First batch done")
 
         return predictions
 
@@ -155,11 +155,11 @@ class Classifier:
 
         json_dict = self.get_prediction_dict(predictions, paths)
 
-        with open(json_target_path, "w") as f:
+        with open(json_target_path, "w", encoding="utf-8") as f:
             json.dump(json_dict, f)
 
         if self.verbose:
-            print(f"Saved predictions to {json_target_path}")
+            ic(f"Saved predictions to {json_target_path}")
 
     def post_process_predictions(
         self, pred_dicts, window_size_s=1, fps=50, min_seq_len_s=0.5

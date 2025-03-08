@@ -44,7 +44,7 @@ BINARIZE_THRESHOLD = 0.5
 data_folder = Path(f"~/test-data/db_frame_dir/{VIDEO_UUID}/").expanduser()
 
 
-model_path = "./data/models/colo_segmentation_RegNetX800MF_6.ckpt"
+MODEL_PATH = "./data/models/colo_segmentation_RegNetX800MF_6.ckpt"
 paths = [p for p in data_folder.glob("*.jpg")]
 
 crop_template = [0, 1080, 550, 1920 - 20]  # [top, bottom, left, right]
@@ -54,7 +54,7 @@ start_message = f"""
     This script is used to predict the labels of a video frame by frame.
 
     Config:
-    - Model: {model_path}
+    - Model: {MODEL_PATH}
     - Data folder: {data_folder}
     - Crop template: {crop_template}
     - Test run: {TEST_RUN}
@@ -107,7 +107,7 @@ unorm = transforms.Normalize(
 )
 
 model = MultiLabelClassificationNet.load_from_checkpoint(  # pylint: disable=no-value-for-parameter
-    checkpoint_path=model_path,
+    checkpoint_path=MODEL_PATH,
 )
 _ = model.cuda()
 _ = model.eval()
@@ -151,7 +151,7 @@ sequence_dict = {}
 for label, prediction_array in binary_smooth_merged_predictions.items():
     sequence_dict[label] = find_true_pred_sequences(prediction_array)
 
-with open(SEQUENCE_PRED_OUTPUT_PATH, "w") as f:
+with open(SEQUENCE_PRED_OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(
         sequence_dict,
         f,
