@@ -16,6 +16,12 @@ from endo_ai.settings_base import (
     STATICFILES_DIRS,
     MEDIA_ROOT,
     MEDIA_URL,
+    CORS_ALLOWED_ORIGINS,
+    CORS_ALLOW_CREDENTIALS,
+    CSRF_TRUSTED_ORIGINS,
+    ROOT_URLCONF,
+
+
 )
 
 DEBUG = True

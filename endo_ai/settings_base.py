@@ -88,12 +88,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "endo_ai.urls"
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5174", "http://127.0.0.1:5174/api/patients"]
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5174", "http://127.0.0.1:8000"
+    ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5174",
     "http://127.0.0.1:5174/api/patients",
-]
+    ]
 
 TEMPLATES = [
     {
