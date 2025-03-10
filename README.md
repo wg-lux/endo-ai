@@ -17,7 +17,7 @@ get raw video uuid
 db_video_dir/634406c1-251a-4ec5-90d8-68431aa24f4c.mp4
 
 ```zsh
-export RAW_VID_UUID=a7852405-bb23-4ef9-b8bd-9018115a11de
+export RAW_VID_UUID=d0f31be07c5c4463b694cef12b97e95c
 python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
 python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
 python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
