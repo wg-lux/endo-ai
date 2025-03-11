@@ -38,4 +38,5 @@ class Command(BaseCommand):
             video = raw_video.get_or_create_video()
             ic(video)
             video.sync_from_raw_video()
+            video.extract_frames()
             video.label_segments_to_frame_annotations()
