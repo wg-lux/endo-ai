@@ -17,7 +17,7 @@ get raw video uuid
 db_video_dir/634406c1-251a-4ec5-90d8-68431aa24f4c.mp4
 
 ```zsh
-export RAW_VID_UUID=d0f31be07c5c4463b694cef12b97e95c
+export RAW_VID_UUID=b672347a-9abf-4ee5-b7d6-cc6a0adc11b4
 python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
 python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
 python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
@@ -116,7 +116,7 @@ v = Video.objects.first()
 v.initialize_video_specs() # set fps, height, duration, width
 v.sync_from_raw_video() # set predictions, readable_predictions, sequences, and some states from raw video file
 
-v.extract_all_frames()
+v.extract_frames()
 ic(v)
 
 # get single frame
