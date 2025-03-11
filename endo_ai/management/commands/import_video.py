@@ -102,8 +102,8 @@ class Command(BaseCommand):
         center_name = options["center_name"]
         processor_name = options["processor_name"]
         video_file = options["video_file"]
-        frame_dir_root = options["frame_dir_root"]
-        video_dir_root = options["video_dir_root"]
+        # frame_dir_root = options["frame_dir_root"]
+        # video_dir_root = options["video_dir_root"]
         delete_source = options["delete_source"]
         save_video_file = options["save_video_file"]
 
@@ -116,14 +116,6 @@ class Command(BaseCommand):
         if not video_file.exists():
             self.stdout.write(self.style.ERROR(f"Video file not found: {video_file}"))  # pylint: disable=no-member
             return
-
-        # Make sure the frame directory exists
-        frame_dir_root = Path(frame_dir_root).expanduser()
-        frame_dir_root.mkdir(parents=True, exist_ok=True)
-
-        # Make sure the video directory exists
-        video_dir_root = Path(video_dir_root).expanduser()
-        video_dir_root.mkdir(parents=True, exist_ok=True)
 
         # Assert Center exists
         try:
@@ -148,8 +140,6 @@ class Command(BaseCommand):
             file_path=video_file,
             center_name=center_name,
             processor_name=processor_name,
-            frame_dir_parent=frame_dir_root,
-            video_dir=video_dir_root,
             delete_source=delete_source,
             save=save_video_file,
         )

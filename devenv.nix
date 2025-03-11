@@ -47,15 +47,12 @@ in
   ];
 
   env = {
-    DJANGO_PSEUDO_DIR = "/home/admin/test-data";
+    
     LD_LIBRARY_PATH = "${
       with pkgs;
       lib.makeLibraryPath buildInputs
     }:/run/opengl-driver/lib:/run/opengl-driver-32/lib";
     CONF_DIR = "./conf";
-    DJANGO_DEBUG = "True";
-    DJANGO_SETTINGS_MODULE = "${DJANGO_MODULE}.settings_dev";
-    # SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
   };
 
   languages.python = {
@@ -94,7 +91,10 @@ in
       ./scripts/transcode_videos.sh
     '';
 
-  scripts.init-env.package = pkgs.zsh;
+  scripts.demo-pipe.exec = ''
+    ./scripts/demo_pipe.sh
+  '';
+
   scripts.init-env.exec =''
     ensure-dirs 
 
@@ -107,12 +107,6 @@ in
     fi
     
     uv pip install -e ${endoregDbRepoDir}/. 
-
-    # if [ -d "${endoregDbApiRepoDir}/.git" ]; then
-    #   cd ${endoregDbApiRepoDir} && git pull && cd ..
-    # else
-    #   git clone https://github.com/wg-lux/endoreg-db-api ./${endoregDbApiRepoDir}
-    # fi
 
     # uv pip install -e ${endoregDbApiRepoDir}/.
 

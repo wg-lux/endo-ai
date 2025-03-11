@@ -11,14 +11,10 @@ python manage.py load_base_db_data
 python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
 python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
 python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
-```
 
-get raw video uuid
-db_video_dir/634406c1-251a-4ec5-90d8-68431aa24f4c.mp4
-
-```zsh
-export RAW_VID_UUID=d0f31be07c5c4463b694cef12b97e95c
-python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
+# export RAW_VID_UUID=5d7276c5-971b-4f42-9e03-f7eff917557f
+# python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
+python manage.py predict_raw_video_files
 python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
 python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
 python manage.py create_anonym_reports
