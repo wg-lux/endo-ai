@@ -5,7 +5,7 @@ Summary Script
 
 ```zsh
 rm db.sqlite3
-init-env
+# init-env
 python manage.py migrate
 python manage.py load_base_db_data
 python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
@@ -23,7 +23,7 @@ python manage.py export_patients
 ```
 
 ```python
-from endoreg_db.models import LabelRawVideoSegment
+from endoreg_db.models import LabelRawVideoSegment, RawVideoFile, Video
 from icecream import ic
 lvss = LabelRawVideoSegment.objects.all()
 lvs = lvss[2]
