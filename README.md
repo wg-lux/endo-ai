@@ -1,35 +1,5 @@
 # endo-ai
 
-endo_ai/predictor/postprocess.py
-Summary Script
-
-```zsh
-rm db.sqlite3
-# init-env
-python manage.py migrate
-python manage.py load_base_db_data
-python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
-python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
-python manage.py import_video ~/test-data/video/lux-gastro-video.mp4
-
-# export RAW_VID_UUID=5d7276c5-971b-4f42-9e03-f7eff917557f
-# python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID
-python manage.py predict_raw_video_files
-python manage.py create_pseudo_patients # Use SensitiveMeta to create Patient
-python manage.py create_pseudo_examinations # Use Sensitive Meta to create Patient Examination
-python manage.py create_anonym_reports
-python manage.py create_anonym_videos
-python manage.py export_patients
-```
-
-```python
-from endoreg_db.models import LabelRawVideoSegment, RawVideoFile, Video
-from icecream import ic
-lvss = LabelRawVideoSegment.objects.all()
-lvs = lvss[2]
-ic(f"Segment length in s: {lvs.get_segment_len_in_s()}")
-```
-
 ## Pipeline
 
 ### Requirements
@@ -44,38 +14,17 @@ ic(f"Segment length in s: {lvs.get_segment_len_in_s()}")
 _Environment_
 
 - run `direnv allow`
-  - will initially fail
-  - run `init-env`
+  - might initially fail
   - run `uv sync`
+  - run `init-env`
   - run `direnv reload`
 
-_Database_
+### Demo
 
-- (if pre-existing, run `rm db.sqlite3`)
-- `python manage.py migrate`
-- `python manage.py load_base_db_data`
+_Note: create a .env file using the template `./conf_template/default.env` and modify it as required_
 
-_Import AI Model_
-run `python manage.py create_multilabel_model_meta --model_path "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"`
-
-_Import Report_
-run `python manage.py import_report ~/test-data/report/lux-gastro-report.pdf`
-
-_Import Video_
-run `python manage.py import_video ~/test-data/video/lux-gastro-video.mp4`
--> Copy UUID of the created RawVideoFile, e.g.:
-
-`Saved db_video_dir/c391b1d0-3e6a-4353-939c-07f02c667fea.mp4`
--> `c391b1d0-3e6a-4353-939c-07f02c667fea`
-
-_Predict Video_
-**KNOWN ISSUE:**
-If we need to download base models, the command needs to be run in devenv shell to find correct ca files
-For ffmpeg to work, we also need to operate within devenv shell
-
-run `devenv shell`
-run `export RAW_VID_UUID=adbbf1ef-ec72-492e-a572-21909e0ccc37`
-run `python manage.py predict_raw_video_file --raw_video_uuid $RAW_VID_UUID`
+- run `devenv shell`
+- run `demo-pipe`
 
 _Remove Outside Regions_
 **In Production, we will neeed to validate Predictions and migrate the pipeline to use annotations instead of predictions**
