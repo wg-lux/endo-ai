@@ -90,9 +90,12 @@ in
   scripts.transcode-videos-in-dir.exec = ''
       ./scripts/transcode_videos.sh
     '';
-
+  scripts.demo-summary.exec = ''
+    python scripts/summary_after_demo_pipe.py
+  '';
   scripts.demo-pipe.exec = ''
     ./scripts/demo_pipe.sh
+    demo-summary
   '';
 
   scripts.init-env.exec =''
