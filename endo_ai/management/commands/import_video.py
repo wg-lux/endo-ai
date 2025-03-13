@@ -144,6 +144,6 @@ class Command(BaseCommand):
 
         paths = video_file_obj.extract_frames(quality=2, overwrite=False, ext="jpg")
         video_file_obj.initialize_frames(paths)
-        video_file_obj.update_text_metadata(ocr_frame_fraction=0.001)
+        video_file_obj.update_text_metadata(ocr_frame_fraction=0.001) #TODO implement lx-anonymizer
 
         # video_file_obj.generate_anonymized_frames()
