@@ -28,6 +28,13 @@ let
 
   port = 8183;
 
+  customTasks = ( 
+
+    import ./devenv/tasks/default.nix ({
+      inherit config pkgs lib;
+    })
+  );
+
 in 
 {
 
@@ -188,7 +195,7 @@ in
     "test:gpu".exec = "${pkgs.uv}/bin/uv run python gpu-check.py";
     "dev:runserver".exec = "${pkgs.uv}/bin/uv run python manage.py runserver";
     "prod:runserver".exec = "${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -b 172.16.255.142 -p 8123";
-  };
+  }//customTasks;
 
   processes = {
     django.exec = "run-dev-server";
