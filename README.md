@@ -112,7 +112,7 @@ v = Video.objects.first()
 v.initialize_video_specs() # set fps, height, duration, width
 v.sync_from_raw_video() # set predictions, readable_predictions, sequences, and some states from raw video file
 
-v.extract_all_frames()
+v.extract_frames()
 ic(v)
 
 # get single frame
