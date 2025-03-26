@@ -45,5 +45,4 @@ packages = ["endo_ai"]
 
 [tool.uv.sources]
 endoreg-db = { path = "endoreg_db_production" }
-agl-frame-extractor = { path = "agl_frame_extractor" }
 endo-ai = { path = "endo_ai" }
