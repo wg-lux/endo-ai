@@ -5,7 +5,6 @@ Management command to import a video file to the database.
 from io import StringIO
 from pathlib import Path
 from django.core.management import BaseCommand
-from lx_anonymizer.management import PDF_Anonymizer
 from endoreg_db.models import (
     RawPdfFile,
     PdfType,
@@ -13,6 +12,8 @@ from endoreg_db.models import (
     EndoscopyProcessor,
 )
 from icecream import ic
+from lx_anonymizer.report_reader import ReportReader
+        
 
 # Example usage:
 # python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
@@ -108,9 +109,28 @@ class Command(BaseCommand):
         elif "histo" in file_path.name:
             pdf_type_name = "ukw-endoscopy-histology-report-generic"  # Not yet working
 
+        elif "AW_PA" in file_path.name:
+            pdf_type_name = "rkh-endoscopy-histology-report-generic"
+
+        else:
+            raise ValueError(f"Unknown report type: {file_path.name}")
+
         pdf_type = PdfType.objects.get(name=pdf_type_name)
         report_file_obj.pdf_type = pdf_type
-        report_file_obj.process_file(verbose=verbose) #TODO Implement lx-anonymizer
+        
+        rr_config = report_file_obj.get_report_reader_config()
+        pdf_path = report_file_obj.file.path
+        
+        rr = ReportReader(
+            **rr_config
+        )  # FIXME In future we need to pass a configuration file
+        # This configuration file should be associated with pdf type
+
+        text, anonymized_text, report_meta = rr.process_report(
+            pdf_path, verbose=verbose
+        )
+        ic(text, anonymized_text, report_meta)
+        report_file_obj.process_file(text, anonymized_text, report_meta, verbose=verbose) #TODO Implement lx-anonymizer
         
         sensitive_meta = report_file_obj.sensitive_meta
         ic(report_file_obj.sensitive_meta)
