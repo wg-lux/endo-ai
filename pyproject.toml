@@ -14,7 +14,7 @@ requires-python = ">=3.11"
 
 dependencies = [
     "agl-frame-extractor",
-    "lx-anonymizer",
+    # "lx-anonymizer",
     "agl-report-reader>=0.4.0",
     "albumentations",
     "asgiref",
@@ -27,6 +27,7 @@ dependencies = [
     "gender-guesser>=0.4.0",
     "icecream",
     "opencv-python",
+    "pip>=25.0.1",
     "psutil>=7.0.0",
     "psycopg[binary]",
     "pydantic",
