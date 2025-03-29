@@ -27,6 +27,11 @@ SECRET_SALT = os.environ.get(
     "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
 )
 
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -88,14 +93,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "endo_ai.urls"
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5174", "http://127.0.0.1:8000"
-    ]
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5174", "http://127.0.0.1:8000"]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5174",
     "http://127.0.0.1:5174/api/patients",
-    ]
+]
 
 TEMPLATES = [
     {

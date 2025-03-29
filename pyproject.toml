@@ -44,5 +44,4 @@ dependencies = [
 packages = ["endo_ai"]
 
 [tool.uv.sources]
-endoreg-db = { path = "endoreg_db_production" }
 endo-ai = { path = "endo_ai" }

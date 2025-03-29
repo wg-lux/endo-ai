@@ -20,9 +20,10 @@ def main(conf_dir: Path = CONF_TARGETS["root"], template_dir: Path = TEMPLATE_DI
     if not conf_dir.exists():
         conf_dir.mkdir()
 
-    db_cfg = DbConfig.from_file(DB_CFG_PATH)
-    db_cfg.validate()
-    db_cfg.to_file(CONF_TARGETS["db"], ask_override=True)
+    if not CONF_TARGETS["db"].exists():
+        db_cfg = DbConfig.from_file(DB_CFG_PATH)
+        db_cfg.validate()
+        db_cfg.to_file(CONF_TARGETS["db"], ask_override=True)
 
 
 if __name__ == "__main__":

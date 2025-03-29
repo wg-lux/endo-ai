@@ -9,7 +9,8 @@ let
 
   DJANGO_MODULE = "endo_ai";
 
-  user = "admin";
+  host = "localhost";
+  port = "8183";
 
   dataDir = "./data";
   importDir = "./data/import";
@@ -26,7 +27,6 @@ let
   endoregDbApiRepoDir = "./endoreg_db_api_production";
   aglFrameExtractorRepoDir = "./agl_frame_extractor";
 
-  port = 8183;
 
   customTasks = ( 
 
@@ -70,17 +70,8 @@ in
     };
   };
 
-  scripts.hello.package = pkgs.zsh;
-  scripts.hello.exec = "${pkgs.uv}/bin/uv run python hello.py";
-  
-  scripts.run-dev-server.package = pkgs.zsh;
-  scripts.run-dev-server.exec =
-    "${pkgs.uv}/bin/uv run python manage.py runserver localhost:${toString port}";
-
-  scripts.run-prod-server.package = pkgs.zsh;
-  scripts.run-prod-server.exec =
-    "${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application";
-
+  scripts.set-prod-settings.exec = "${pkgs.uv}/bin/uv run python scripts/set_production_settings.py";
+  scripts.set-dev-settings.exec = "${pkgs.uv}/bin/uv run python scripts/set_development_settings.py";
   scripts.env-setup.package = pkgs.zsh;
   scripts.env-setup.exec = ''
     export CONF_DIR="/var/endo-ai/data"
@@ -93,7 +84,20 @@ in
     }:/run/opengl-driver/lib:/run/opengl-driver-32/lib"
   '';
 
-  scripts.transcode-videos-in-dir.package = pkgs.zsh;
+  scripts.run-dev-server.exec = ''
+    set-dev-settings
+    echo "Running dev server"
+    echo "Host: ${host}"
+    echo "Port: ${port}"
+    ${pkgs.uv}/bin/uv run python manage.py runserver ${host}:${port}
+  '';
+
+  scripts.run-prod-server.exec = ''
+    set-prod-settings
+    ${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -p ${port}
+  '';
+
+
   scripts.transcode-videos-in-dir.exec = ''
       ./scripts/transcode_videos.sh
     '';
@@ -105,40 +109,11 @@ in
     demo-summary
   '';
 
-  scripts.init-env.exec =''
-    ensure-dirs 
 
-    uv pip install -e .
-    
-    if [ -d "${endoregDbRepoDir}/.git" ]; then
-      cd ${endoregDbRepoDir} && git pull && cd ..
-    else
-      git clone https://github.com/wg-lux/endoreg-db ./${endoregDbRepoDir}
-    fi
-    
-    uv pip install -e ${endoregDbRepoDir}/. 
-
-    # uv pip install -e ${endoregDbApiRepoDir}/.
-
-    if [ -d "${aglFrameExtractorRepoDir}/.git" ]; then
-      cd ${aglFrameExtractorRepoDir} && git pull && cd ..
-    else
-      git clone https://github.com/wg-lux/agl-frame-extractor ./${aglFrameExtractorRepoDir}
-    fi
-
-    uv pip install -e ${aglFrameExtractorRepoDir}/.
-
-    init-lxdb-config
-    # devenv tasks run deploy:make-migrations
-    # devenv tasks run deploy:migrate
-  '';
-
-  scripts.check-psql.package = pkgs.zsh;
   scripts.check-psql.exec = ''
     devenv tasks run deploy:ensure-psql-user
   '';
 
-  scripts.init-lxdb-config.package = pkgs.zsh;
   scripts.init-lxdb-config.exec = ''
   # if /etc/secrets/vault/SCRT_local_password_maintenance_password doesnt exist, we need to create it
     if [ ! -f "/etc/secrets/vault/SCRT_local_password_maintenance_password" ]; then
@@ -167,7 +142,7 @@ in
     mkdir -p ${importLegacyAnnotationDir}
     mkdir -p ${exportFramesRootDir}
 
-    chown -R ${user} ${dataDir}
+
     chmod -R 700 ${dataDir}
     '';
 
@@ -198,7 +173,7 @@ in
   }//customTasks;
 
   processes = {
-    django.exec = "run-dev-server";
+    django.exec = "run-prod-server";
     silly-example.exec = "while true; do echo hello && sleep 10; done";
     # django.exec = "${pkgs.uv}/bin/uv run python manage.py runserver 127.0.0.1:8123";
   };

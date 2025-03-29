@@ -1,6 +1,6 @@
 import os
-from endoreg_db.models import DbConfig
-from endoreg_db_api.settings_base import (
+from endoreg_db.utils import DbConfig
+from endo_ai.settings_base import (
     BASE_DIR,
     CONF_DIR,
     DEBUG,
@@ -21,8 +21,7 @@ from endoreg_db_api.settings_base import (
 
 DB_CFG_FILE = CONF_DIR / "db.yaml"
 
-SECRET_KEY = "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6"
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 
 
 db_config: DbConfig = DbConfig.from_file(DB_CFG_FILE)
