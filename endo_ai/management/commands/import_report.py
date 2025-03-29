@@ -5,6 +5,7 @@ Management command to import a video file to the database.
 from io import StringIO
 from pathlib import Path
 from django.core.management import BaseCommand
+from lx_anonymizer.management import PDF_Anonymizer
 from endoreg_db.models import (
     RawPdfFile,
     PdfType,
