@@ -111,6 +111,7 @@ class Command(BaseCommand):
         pdf_type = PdfType.objects.get(name=pdf_type_name)
         report_file_obj.pdf_type = pdf_type
         report_file_obj.process_file(verbose=verbose) #TODO Implement lx-anonymizer
+        
         sensitive_meta = report_file_obj.sensitive_meta
         ic(report_file_obj.sensitive_meta)
         patient = sensitive_meta.get_or_create_pseudo_patient()
