@@ -14,6 +14,7 @@ requires-python = ">=3.11"
 
 dependencies = [
     "agl-frame-extractor",
+    "lx-anonymizer",
     "agl-report-reader>=0.4.0",
     "albumentations",
     "asgiref",
@@ -45,3 +46,4 @@ packages = ["endo_ai"]
 
 [tool.uv.sources]
 endo-ai = { path = "endo_ai" }
+lx-anonymizer = { path = "lx_anonymizer" }
