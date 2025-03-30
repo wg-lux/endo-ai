@@ -93,7 +93,7 @@ in
   '';
 
   scripts.run-prod-server.exec = ''
-    init-lxdb-config
+    init-env
     set-prod-settings
     ${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -p ${port}
   '';
@@ -117,42 +117,17 @@ in
 
   scripts.init-env.exec =''
     ensure-dirs 
-
     uv pip install -e .
-    
-    # if [ -d "${endoregDbRepoDir}/.git" ]; then
-    #   cd ${endoregDbRepoDir} && git pull && cd ..
-    # else
-    #   git clone https://github.com/wg-lux/endoreg-db ./${endoregDbRepoDir}
-    # fi
-    
-    # uv pip install -e ${endoregDbRepoDir}/. 
-
-    # # uv pip install -e ${endoregDbApiRepoDir}/.
-
-    # if [ -d "${aglFrameExtractorRepoDir}/.git" ]; then
-    #   cd ${aglFrameExtractorRepoDir} && git pull && cd ..
-    # else
-    #   git clone https://github.com/wg-lux/agl-frame-extractor ./${aglFrameExtractorRepoDir}
-    # fi
-
-    # uv pip install -e ${aglFrameExtractorRepoDir}/.
-
+    init-data
+  
     init-lxdb-config
-    # devenv tasks run deploy:make-migrations
-    # devenv tasks run deploy:migrate
+
   '';
 
   scripts.init-lxdb-config.exec = ''
-  # if /etc/secrets/vault/SCRT_local_password_maintenance_password doesnt exist, we need to create it
-    if [ ! -f "/etc/secrets/vault/SCRT_local_password_maintenance_password" ]; then
-      echo "CHANGEME" > /etc/secrets/vault/SCRT_local_password_maintenance_password
-    fi
-    
     devenv tasks run deploy:init-conf
   '';
 
-  scripts.init-data.package = pkgs.zsh;
   scripts.init-data.exec = ''
     # export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_prod"
     devenv tasks run deploy:make-migrations
@@ -160,7 +135,6 @@ in
     devenv tasks run deploy:load-base-db-data
   '';
 
-  scripts.ensure-dirs.package = pkgs.zsh;
   scripts.ensure-dirs.exec = ''
     mkdir -p ${dataDir}
     mkdir -p ${importDir}
@@ -181,13 +155,6 @@ in
     devenv shell -i runtests
     cd ..
   '';
-
-  # scripts.install-api.exec = ''
-  #   init-lxdb-config
-  #   check-psql
-  #   init-data
-  # '';
-
 
   tasks = {
     "deploy:init-conf".exec = "${pkgs.uv}/bin/uv run python scripts/make_conf.py";
