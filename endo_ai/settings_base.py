@@ -18,12 +18,19 @@ import sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Override default if DJANGO_PSEUDO_DIR is set.
-PSEUDO_DIR = Path(os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data"))
+PSEUDO_DIR = Path(
+    os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data")
+).expanduser()
 
 sys.path.insert(0, str(BASE_DIR / "endoreg-db-production"))
 
 SECRET_SALT = os.environ.get(
     "DJANGO_SECRET_SALT",
+    "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
+)
+
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
     "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
 )
 
@@ -88,14 +95,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "endo_ai.urls"
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5174", "http://127.0.0.1:8000"
-    ]
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5174", "http://127.0.0.1:8000"]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5174",
     "http://127.0.0.1:5174/api/patients",
-    ]
+]
 
 TEMPLATES = [
     {
