@@ -93,6 +93,7 @@ in
   '';
 
   scripts.run-prod-server.exec = ''
+    init-lxdb-config
     set-prod-settings
     ${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -p ${port}
   '';
@@ -112,6 +113,34 @@ in
 
   scripts.check-psql.exec = ''
     devenv tasks run deploy:ensure-psql-user
+  '';
+
+  scripts.init-env.exec =''
+    ensure-dirs 
+
+    uv pip install -e .
+    
+    # if [ -d "${endoregDbRepoDir}/.git" ]; then
+    #   cd ${endoregDbRepoDir} && git pull && cd ..
+    # else
+    #   git clone https://github.com/wg-lux/endoreg-db ./${endoregDbRepoDir}
+    # fi
+    
+    # uv pip install -e ${endoregDbRepoDir}/. 
+
+    # # uv pip install -e ${endoregDbApiRepoDir}/.
+
+    # if [ -d "${aglFrameExtractorRepoDir}/.git" ]; then
+    #   cd ${aglFrameExtractorRepoDir} && git pull && cd ..
+    # else
+    #   git clone https://github.com/wg-lux/agl-frame-extractor ./${aglFrameExtractorRepoDir}
+    # fi
+
+    # uv pip install -e ${aglFrameExtractorRepoDir}/.
+
+    init-lxdb-config
+    # devenv tasks run deploy:make-migrations
+    # devenv tasks run deploy:migrate
   '';
 
   scripts.init-lxdb-config.exec = ''
