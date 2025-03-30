@@ -10,7 +10,26 @@ requires-python = ">=3.11"
 #  - endo-ai==0.1.0 (from file:///home/admin/dev/endo-ai)
 #  - endoreg-db==0.5.3 (from file:///home/admin/dev/endo-ai/endoreg_db_production)
 #  - endoreg-db-api==0.1.0 (from file:///home/admin/dev/endo-ai/endoreg_db_api_production)
+authors = [
+    { name = "Thomas J. Lux", email = "lux_t1@ukw.de" },
+    { name = "Max Hild" },
+    { name = "Hamza Zahid" },
+    { name = "Peter Kowalczyk" },
+]
+maintainers = [
+    { name = "Thomas J. Lux", email = "lux_t1@ukw.de" },
+    { name = "Max Hild" },
+    { name = "Hamza Zahid" },
+    { name = "Peter Kowalczyk" },
+]
 
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 
 dependencies = [
     "agl-frame-extractor",
@@ -39,6 +58,10 @@ dependencies = [
     "torchvision",
     "whitenoise",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.setuptools]
 packages = ["endo_ai"]

@@ -18,7 +18,9 @@ import sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Override default if DJANGO_PSEUDO_DIR is set.
-PSEUDO_DIR = Path(os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data"))
+PSEUDO_DIR = Path(
+    os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data")
+).expanduser()
 
 sys.path.insert(0, str(BASE_DIR / "endoreg-db-production"))
 
