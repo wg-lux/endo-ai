@@ -28,19 +28,19 @@ let
   aglFrameExtractorRepoDir = "./agl_frame_extractor";
 
 
-  customTasks = ( 
-
-    import ./devenv/tasks/default.nix ({
-      inherit config pkgs lib;
-    })
-  );
+  # customTasks = ( 
+    
+    # import ./devenv/tasks/default.nix ({
+    #   inherit config pkgs lib;
+    # })
+  # );
 
 in 
 {
 
   # A dotenv file was found, while dotenv integration is currently not enabled.
   dotenv.enable = true;
-  dotenv.disableHint = true;
+  dotenv.disableHint = false;
 
   # shell = lib.mkForce pkgs.zsh;
 
@@ -72,7 +72,8 @@ in
 
   scripts.set-prod-settings.exec = "${pkgs.uv}/bin/uv run python scripts/set_production_settings.py";
   scripts.set-dev-settings.exec = "${pkgs.uv}/bin/uv run python scripts/set_development_settings.py";
-  scripts.env-setup.package = pkgs.zsh;
+  scripts.export-env-file.exec = "export $(cat .env | xargs)";
+
   scripts.env-setup.exec = ''
     export CONF_DIR="/var/endo-ai/data"
     export PSEUDO_DIR="/var/endo-ai/data"
@@ -95,6 +96,7 @@ in
   scripts.run-prod-server.exec = ''
     init-env
     set-prod-settings
+    export-env-file
     ${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -p ${port}
   '';
 
@@ -129,7 +131,6 @@ in
   '';
 
   scripts.init-data.exec = ''
-    # export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_prod"
     devenv tasks run deploy:make-migrations
     devenv tasks run deploy:migrate
     devenv tasks run deploy:load-base-db-data
@@ -149,24 +150,26 @@ in
     chmod -R 700 ${dataDir}
     '';
 
-  scripts.test-local-endoreg-db.package = pkgs.zsh;
-  scripts.test-local-endoreg-db.exec = ''
-    cd ${endoregDbRepoDir}
-    devenv shell -i runtests
-    cd ..
-  '';
 
   tasks = {
     "deploy:init-conf".exec = "${pkgs.uv}/bin/uv run python scripts/make_conf.py";
-    "deploy:ensure-psql-user".exec = "${pkgs.uv}/bin/uv run python scripts/ensure_psql_user.py";
+    # "deploy:ensure-psql-user".exec = "${pkgs.uv}/bin/uv run python scripts/ensure_psql_user.py";
     "deploy:make-migrations".exec = "${pkgs.uv}/bin/uv run python manage.py makemigrations";
     "deploy:migrate".exec = "${pkgs.uv}/bin/uv run python manage.py migrate";
     "deploy:load-base-db-data".exec = "${pkgs.uv}/bin/uv run python manage.py load_base_db_data";
     "deploy:collectstatic".exec = "${pkgs.uv}/bin/uv run python manage.py collectstatic --noinput";
-    "test:gpu".exec = "${pkgs.uv}/bin/uv run python gpu-check.py";
-    "dev:runserver".exec = "${pkgs.uv}/bin/uv run python manage.py runserver";
-    "prod:runserver".exec = "${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -b 172.16.255.142 -p 8123";
-  }//customTasks;
+    # "test:gpu".exec = "${pkgs.uv}/bin/uv run python gpu-check.py";
+    "env:build" = {
+      description = "Build the .env file";
+      after = ["devenv:enterShell"];
+      exec = "uv run env_setup.py";
+    };
+    "env:export" = {
+      description = "Export the .env file";
+      after = ["env:build"];
+      exec = "export $(cat .env | xargs)";
+    };
+  };
 
   processes = {
     django.exec = "run-prod-server";
