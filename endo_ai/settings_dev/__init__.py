@@ -20,12 +20,9 @@ from endo_ai.settings_base import (
     CORS_ALLOW_CREDENTIALS,
     CSRF_TRUSTED_ORIGINS,
     ROOT_URLCONF,
-
-
 )
 
 DEBUG = True
-SECRET_KEY = "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6"
 
 DATABASES = {
     "default": {
@@ -55,7 +52,6 @@ __all__ = [
     "STATICFILES_DIRS",
     "MEDIA_ROOT",
     "MEDIA_URL",
-    "SECRET_KEY",
     "DEBUG",
     "DATABASES",
     "ALLOWED_HOSTS",

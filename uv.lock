@@ -467,7 +467,7 @@ wheels = [
 [[package]]
 name = "endo-ai"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "agl-frame-extractor" },
     { name = "agl-report-reader" },
@@ -555,9 +555,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/d6/86180dadaad0167fd4c327fa3a6dd2df276b3f14671286af47e2b061dcc7/endoreg_db-0.6.2.tar.gz", hash = "sha256:4b4c404e3c6fa7a71890e43e779fbe9cdc106eaa969d7f4dbd8cf770309b5819", size = 265989 }
+sdist = { url = "https://files.pythonhosted.org/packages/8c/8e/e3d565901ea1d7fb8ac80eee59ecb4fbdf3d94794fd75cfe86482586b4f5/endoreg_db-0.6.1.tar.gz", hash = "sha256:68396ee98952b0558749a8c1ed8792f2133a86218c3eeb21e06ce1242460bf80", size = 265703 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/6f/9eba5aff285e1a9dd6c008981e824c3fbb806ce671c68bcda86b631014b3/endoreg_db-0.6.2-py3-none-any.whl", hash = "sha256:9ebd23b50c34c79a87c963bc36df8352b64aa09ffde643d5ce899830c981ce55", size = 328163 },
+    { url = "https://files.pythonhosted.org/packages/be/3b/171710dcf17c5005879650f63ddb01913ae78be4b0a4f70a22afe5fda0dd/endoreg_db-0.6.1-py3-none-any.whl", hash = "sha256:419e27d27a795f6c9feff4b6e24220a6e0a82f63fd9c59e9093d7ec139f6d315", size = 327960 },
 ]
 
 [[package]]
