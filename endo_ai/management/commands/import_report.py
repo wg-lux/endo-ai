@@ -4,12 +4,6 @@ Management command to import a video file to the database.
 
 from io import StringIO
 from pathlib import Path
-import sys
-import os
-
-# Add the lx_anonymizer directory to the Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../../lx_anonymizer'))
-
 from django.core.management import BaseCommand
 from endoreg_db.models import (
     RawPdfFile,
@@ -18,7 +12,7 @@ from endoreg_db.models import (
     EndoscopyProcessor,
 )
 from icecream import ic
-from lx_anonymizer.lx_anonymizer.report_reader import ReportReader
+from lx_anonymizer import ReportReader
 
 # Example usage:
 # python manage.py import_report ~/test-data/report/lux-gastro-report.pdf
