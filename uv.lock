@@ -529,7 +529,7 @@ requires-dist = [
 
 [[package]]
 name = "endoreg-db"
-version = "0.6.2"
+version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "agl-report-reader" },
