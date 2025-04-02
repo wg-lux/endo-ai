@@ -20,6 +20,7 @@ from endo_ai.settings_base import (
     CORS_ALLOW_CREDENTIALS,
     CSRF_TRUSTED_ORIGINS,
     ROOT_URLCONF,
+    SECRET_KEY,
 )
 
 DEBUG = True
