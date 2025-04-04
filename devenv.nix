@@ -51,10 +51,12 @@ in
     ffmpeg-headless.bin
     tesseract
     pkgs.zsh
+  
+
   ];
 
   env = {
-    
+    BASE_API_URL = "http://127.0.0.1:8000";  #  API URL,Change this to the new URL, need to cross check with any other url
     LD_LIBRARY_PATH = "${
       with pkgs;
       lib.makeLibraryPath buildInputs

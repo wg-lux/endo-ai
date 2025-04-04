@@ -227,3 +227,9 @@ tmux attach -t endo-ai
 # Optional: Kill session when done
 
 tmux kill-session -t endo-ai
+
+## Possible Errors
+- `Module not found` error detected. Check the `.env` and `./conf/default.env` files for missing or incorrect configurations.
+
+## BASE_API_URL
+- The BASE_API_URL is set in devenv.nix and also in settings_base.py and import in settings_dev/_init_.py, allowing API calls to switch between development (127.0.0.1:8000) and production (for future, for exmaple : www.demo.com). 
