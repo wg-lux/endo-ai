@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from keycloak import KeycloakOpenID
 from pathlib import Path
 import os
 import sys
@@ -92,7 +92,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "endo_ai.keycloak_middleware.KeycloakMiddleware",  # 👈 your custom JWT validation/for keycloak
 ]
+
 
 ROOT_URLCONF = "endo_ai.urls"
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5174", "http://127.0.0.1:8000"]
@@ -160,3 +162,45 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# manage API URLs dynamically so that they are easy to change in the future. this variable is store in devenv.nix file
+BASE_API_URL = os.getenv('BASE_API_URL', 'http://127.0.0.1:8000') # Change the URL  in devenv.nix file, it will dynamically read the BASE_API_URL environment variable
+
+
+#for keycloak
+from keycloak import KeycloakOpenID
+
+KEYCLOAK_SERVER_URL = "https://keycloak.endo-reg.net"
+KEYCLOAK_REALM = "myproject"
+KEYCLOAK_CLIENT_ID = "django-backend"
+KEYCLOAK_CLIENT_SECRET = "uRJfV47KaxMO2HaQfmt6ZHgaei0QHJ6X"
+KEYCLOAK_OPENID_CONFIG_URL = f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid-configuration"
+
+keycloak_openid = KeycloakOpenID(
+    server_url=KEYCLOAK_SERVER_URL,
+    client_id=KEYCLOAK_CLIENT_ID,
+    realm_name=KEYCLOAK_REALM,
+    client_secret_key=KEYCLOAK_CLIENT_SECRET,
+    verify=True
+)
+
+REST_FRAMEWORK = {
+    # It uses Django’s session-based login system (like when a user logs in via browser and a session is stored in a cookie).
+    # DRF looks at the session cookie (usually sessionid), and:
+    # If found thn fetches the user from request.user
+    # If not found then treats request as unauthenticated
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    # DRF will block all requests unless request.user.is_authenticated == True in other words, all API views are treated as protected by default, unless you explicitly override them.
+    # so currently , i am protecting for one api so no need for this
+    # It returns HTTP 403 Forbidden for anonymous users
+    'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny'
+
+    ],
+}
+
+# To test the protect url  http://127.0.0.1:8000/api/videos/, turn this to True
+ENABLE_KEYCLOAK_AUTH = False 
