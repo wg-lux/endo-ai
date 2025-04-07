@@ -173,7 +173,7 @@ from keycloak import KeycloakOpenID
 KEYCLOAK_SERVER_URL = "https://keycloak.endo-reg.net"
 KEYCLOAK_REALM = "myproject"
 KEYCLOAK_CLIENT_ID = "django-backend"
-KEYCLOAK_CLIENT_SECRET = "uRJfV47KaxMO2HaQfmt6ZHgaei0QHJ6X"
+KEYCLOAK_CLIENT_SECRET = ""
 KEYCLOAK_OPENID_CONFIG_URL = f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid-configuration"
 
 keycloak_openid = KeycloakOpenID(
