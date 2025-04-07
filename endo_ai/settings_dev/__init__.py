@@ -29,8 +29,10 @@ from endo_ai.settings_base import (
     KEYCLOAK_OPENID_CONFIG_URL,
     keycloak_openid,
     REST_FRAMEWORK,
-    ENABLE_KEYCLOAK_AUTH
-
+    ENABLE_KEYCLOAK_AUTH,
+    SECRET_KEY,
+    LOGGING, #for json log
+    REQUEST_ID_HEADER
 
 
 )
