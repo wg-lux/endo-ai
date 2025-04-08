@@ -180,11 +180,12 @@ BASE_API_URL = os.getenv('BASE_API_URL', 'http://127.0.0.1:8000') # Change the U
 #for keycloak, need to change the integration settings
 from keycloak import KeycloakOpenID
 # visit the realm
-KEYCLOAK_SERVER_URL = ""
-KEYCLOAK_REALM = ""
-KEYCLOAK_CLIENT_ID = ""
-KEYCLOAK_CLIENT_SECRET = ""
-KEYCLOAK_OPENID_CONFIG_URL = ""
+KEYCLOAK_SERVER_URL = os.environ.get("KEYCLOAK_SERVER_URL", "")
+KEYCLOAK_REALM = os.environ.get("KEYCLOAK_REALM", "")
+KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "")
+KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "")
+KEYCLOAK_OPENID_CONFIG_URL = os.environ.get("KEYCLOAK_OPENID_CONFIG_URL", "")
+
 
 keycloak_openid = KeycloakOpenID(
     server_url=KEYCLOAK_SERVER_URL,
