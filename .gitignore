@@ -3,7 +3,7 @@ endoreg_db_api_production/
 agl_frame_extractor/
 .devenv-vars.json
 ./erc_data/
-./erc-data/
+./data-old/
 
 conf/
 data_anonym/
