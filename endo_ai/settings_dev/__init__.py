@@ -20,6 +20,7 @@ from endo_ai.settings_base import (
     CORS_ALLOW_CREDENTIALS,
     CSRF_TRUSTED_ORIGINS,
     ROOT_URLCONF,
+    SECRET_KEY,
     BASE_API_URL, #for api/endpoint url
     #for keycloak
     KEYCLOAK_SERVER_URL,
@@ -33,8 +34,6 @@ from endo_ai.settings_base import (
     SECRET_KEY,
     LOGGING, #for json log
     REQUEST_ID_HEADER
-
-
 )
 
 DEBUG = True
