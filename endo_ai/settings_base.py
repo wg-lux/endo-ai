@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from keycloak import KeycloakOpenID
 from pathlib import Path
 import os
 import sys
@@ -33,6 +33,9 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
 )
+
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -92,7 +95,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
+    "endo_ai.keycloak_middleware.KeycloakMiddleware",  #  your custom JWT validation/for keycloak
+    # Middleware that injects a unique `request_id` into every request
+    "log_request_id.middleware.RequestIDMiddleware",
+    "endo_ai.middleware.log_context.LogContextMiddleware", #custom middleware for logs
+    ]
+
 
 ROOT_URLCONF = "endo_ai.urls"
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5174", "http://127.0.0.1:8000"]
@@ -160,3 +168,119 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# manage API URLs dynamically so that they are easy to change in the future. this variable is store in devenv.nix file
+BASE_API_URL = os.getenv('BASE_API_URL', 'http://127.0.0.1:8000') # Change the URL  in devenv.nix file, it will dynamically read the BASE_API_URL environment variable
+
+
+#for keycloak, need to change the integration settings
+from keycloak import KeycloakOpenID
+# visit the realm
+KEYCLOAK_SERVER_URL = ""
+KEYCLOAK_REALM = ""
+KEYCLOAK_CLIENT_ID = ""
+KEYCLOAK_CLIENT_SECRET = ""
+KEYCLOAK_OPENID_CONFIG_URL = ""
+
+keycloak_openid = KeycloakOpenID(
+    server_url=KEYCLOAK_SERVER_URL,
+    client_id=KEYCLOAK_CLIENT_ID,
+    realm_name=KEYCLOAK_REALM,
+    client_secret_key=KEYCLOAK_CLIENT_SECRET,
+    verify=True
+)
+
+REST_FRAMEWORK = {
+    # It uses Django’s session-based login system (like when a user logs in via browser and a session is stored in a cookie).
+    # DRF looks at the session cookie (usually sessionid), and:
+    # If found thn fetches the user from request.user
+    # If not found then treats request as unauthenticated
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    # DRF will block all requests unless request.user.is_authenticated == True in other words, all API views are treated as protected by default, unless you explicitly override them.
+    # so currently , i am protecting for one api so no need for this
+    # It returns HTTP 403 Forbidden for anonymous users
+    'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny'
+
+    ],
+}
+
+# To test the protect url  http://127.0.0.1:8000/api/videos/, turn this to True
+ENABLE_KEYCLOAK_AUTH = False 
+
+
+## For  Enable structured logging (JSON) in Django 
+# first install python-json-logger and django-log-request-id then
+LOGGING = {
+    # Required for Python's logging system
+    "version": 1,
+
+    # Keep Django’s existing loggers enabled
+    "disable_existing_loggers": False,
+
+    # Formatters define the structure of the log messages
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            # Include request ID in structured JSON log output
+            "fmt": "%(asctime)s %(levelname)s %(name)s %(request_id)s %(hostname)s %(message)s"
+        },
+    },
+
+    # Filters allow modifying log records before they are emitted
+    "filters": {
+        "request_id_filter": {
+            "()": "endo_ai.logging_filters.RequestIDLogFilter"
+        },
+    },
+
+    # Handlers decide where log records go (console, file, etc.)
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",     # Send logs to stdout
+            "formatter": "json",                  # Use JSON format
+            "filters": ["request_id_filter"],     # Inject request_id into each log
+        },
+    },
+
+    # Root logger configuration (applies to everything unless overridden)
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+
+    # Per-logger configuration for specific Django components
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.server": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+}
+
+
+LOGGING["formatters"]["json"]["fmt"] = (
+    "%(asctime)s %(levelname)s %(name)s %(request_id)s %(message)s"
+)
+
+#for json logging , Unique ID header for log correlation (used by log_request_id)
+REQUEST_ID_HEADER = "HTTP_X_REQUEST_ID"
