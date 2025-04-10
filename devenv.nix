@@ -12,20 +12,20 @@ let
   host = "localhost";
   port = "8183";
 
-  dataDir = "./data";
-  importDir = "./data/import";
+  dataDir = "data";
+  importDir = "${dataDir}/import";
   importVideoDir = "${importDir}/video";
   importReportDir = "${importDir}/report";
   importLegacyAnnotationDir = "${importDir}/legacy_annotations";
   
-  exportDir = "./data/export";
+  exportDir = "${dataDir}/export";
   exportFramesRootDir = "${exportDir}/frames";
   exportFramesSampleExportDir = "${exportFramesRootDir}/test_outputs";
-  modelDir = "./data/models";
+  modelDir = "${dataDir}/models";
 
-  endoregDbRepoDir = "./endoreg_db_production";
-  endoregDbApiRepoDir = "./endoreg_db_api_production";
-  aglFrameExtractorRepoDir = "./agl_frame_extractor";
+  # endoregDbRepoDir = "endoreg_db_production";
+  # endoregDbApiRepoDir = "${workingDir}/endoreg_db_api_production";
+  # aglFrameExtractorRepoDir = "${workingDir}/agl_frame_extractor";
 
 
   # customTasks = ( 
@@ -51,8 +51,6 @@ in
     ffmpeg-headless.bin
     tesseract
     pkgs.zsh
-  
-
   ];
 
   env = {
@@ -77,8 +75,6 @@ in
   scripts.export-env-file.exec = "export $(cat .env | xargs)";
 
   scripts.env-setup.exec = ''
-    export CONF_DIR="/var/endo-ai/data"
-    export PSEUDO_DIR="/var/endo-ai/data"
     export DJANGO_SETTINGS_MODULE="${DJANGO_MODULE}.settings_dev"
     export DJANGO_DEBUG="True"
     export LD_LIBRARY_PATH="${
@@ -102,7 +98,6 @@ in
     ${pkgs.uv}/bin/uv run daphne ${DJANGO_MODULE}.asgi:application -p ${port}
   '';
 
-
   scripts.transcode-videos-in-dir.exec = ''
       ./scripts/transcode_videos.sh
     '';
@@ -113,7 +108,6 @@ in
     ./scripts/demo_pipe.sh
     demo-summary
   '';
-
 
   scripts.check-psql.exec = ''
     devenv tasks run deploy:ensure-psql-user
@@ -152,6 +146,28 @@ in
     chmod -R 700 ${dataDir}
     '';
 
+  scripts.export-nix-vars.exec = ''
+    cat > .devenv-vars.json << EOF
+    {
+      "DJANGO_MODULE": "${DJANGO_MODULE}",
+      "HOST": "${host}",
+      "PORT": "${port}",
+      "DATA_DIR": "${dataDir}",
+      "IMPORT_DIR": "${importDir}",
+      "EXPORT_DIR": "${exportDir}",
+      "MODEL_DIR": "${modelDir}",
+      "CONF_DIR": "${config.env.CONF_DIR}",
+      "HOME_DIR": "$HOME",
+      "WORKING_DIR": "$PWD",
+      "TEST_RUN": "False",
+      "TEST_RUN_FRAME_NUMBER": "1000",
+      "RUST_BACKTRACE": "1",
+      "DJANGO_DEBUG": "True",
+      "DJANGO_FFMPEG_EXTRACT_FRAME_BATCHSIZE": "500"
+    }
+    EOF
+    echo "Exported Nix variables to .devenv-vars.json"
+  '';
 
   tasks = {
     "deploy:init-conf".exec = "${pkgs.uv}/bin/uv run python scripts/make_conf.py";
@@ -163,8 +179,7 @@ in
     # "test:gpu".exec = "${pkgs.uv}/bin/uv run python gpu-check.py";
     "env:build" = {
       description = "Build the .env file";
-      after = ["devenv:enterShell"];
-      exec = "uv run env_setup.py";
+      exec = "export-nix-vars && uv run env_setup.py";
     };
     "env:export" = {
       description = "Export the .env file";
@@ -181,6 +196,13 @@ in
 
   enterShell = ''
     . .devenv/state/venv/bin/activate
-    # init-env
+    
+    # Only run env setup if .env doesn't exist or is empty
+    if [ ! -f .env ] || [ ! -s .env ]; then
+      echo "No .env file found, generating one..."
+      export-nix-vars
+      uv run env_setup.py
+    fi
+    export $(cat .env | xargs)
   '';
 }

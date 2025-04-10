@@ -493,6 +493,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-log-request-id"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/95/c8dd19482d82581a5ce3e2566cf4fb250f21bd3759fbee03fece56992fbd/django-log-request-id-2.1.0.tar.gz", hash = "sha256:b11fc821774b54b820ef2e732dbaa52304711de8d5c4f9031ca48578f6121ab6", size = 7437 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/1b/2bbd1f4a0ce210d6543c1dafed9735808237fbab7d785d1239a19ade3f15/django_log_request_id-2.1.0-py3-none-any.whl", hash = "sha256:c0793c030cfe9f673eff3f89667711f65c39509c016d85e436f9d48507ee778c", size = 8496 },
+]
+
+[[package]]
 name = "django-oauth-toolkit"
 version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -532,6 +544,7 @@ dependencies = [
     { name = "channels" },
     { name = "daphne" },
     { name = "django" },
+    { name = "django-log-request-id" },
     { name = "django-oauth-toolkit" },
     { name = "endoreg-db" },
     { name = "faker" },
@@ -544,6 +557,7 @@ dependencies = [
     { name = "pyjwt" },
     { name = "pyperformance" },
     { name = "python-ffmpeg" },
+    { name = "python-json-logger" },
     { name = "python-keycloak" },
     { name = "pytorch-lightning" },
     { name = "pyyaml" },
@@ -565,6 +579,8 @@ requires-dist = [
     { name = "channels" },
     { name = "daphne" },
     { name = "django" },
+    { name = "django-log-request-id", specifier = ">=2.1.0" },
+    { name = "django-oauth-toolkit", specifier = ">=3.0.1" },
     { name = "endoreg-db" },
     { name = "faker", specifier = ">=36.1.1" },
     { name = "gender-guesser", specifier = ">=0.4.0" },
@@ -576,6 +592,7 @@ requires-dist = [
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "pyperformance", specifier = ">=1.11.0" },
     { name = "python-ffmpeg" },
+    { name = "python-json-logger", specifier = ">=3.3.0" },
     { name = "python-keycloak", specifier = ">=5.3.1" },
     { name = "pytorch-lightning" },
     { name = "pyyaml" },
@@ -1682,6 +1699,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/dd/4d/7ecffb341d646e016be76e36f5a42cb32f409c9ca21a57b68f067fad3fc7/python_ffmpeg-2.0.12.tar.gz", hash = "sha256:19ac80af5a064a2f53c245af1a909b2d7648ea045500d96d3bcd507b88d43dc7", size = 14126292 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/6d/02e817aec661defe148cb9eb0c4eca2444846305f625c2243fb9f92a9045/python_ffmpeg-2.0.12-py3-none-any.whl", hash = "sha256:d86697da8dfb39335183e336d31baf42fb217468adf5ac97fd743898240faae3", size = 14411 },
+]
+
+[[package]]
+name = "python-json-logger"
+version = "3.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/de/d3144a0bceede957f961e975f3752760fbe390d57fbe194baf709d8f1f7b/python_json_logger-3.3.0.tar.gz", hash = "sha256:12b7e74b17775e7d565129296105bbe3910842d9d0eb083fc83a6a617aa8df84", size = 16642 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/20/0f2523b9e50a8052bc6a8b732dfc8568abbdc42010aef03a2d750bdab3b2/python_json_logger-3.3.0-py3-none-any.whl", hash = "sha256:dd980fae8cffb24c13caf6e158d3d61c0d6d22342f932cb6e9deedab3d35eec7", size = 15163 },
 ]
 
 [[package]]
