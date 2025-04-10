@@ -1,7 +1,8 @@
 endoreg_db_production/
 endoreg_db_api_production/
 agl_frame_extractor/
-lx_anonymizer/ 
+lx_anonymizer/  
+.devenv-vars.json
 ./erc_data/
 ./erc-data/
 
