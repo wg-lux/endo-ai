@@ -532,6 +532,17 @@ wheels = [
 ]
 
 [[package]]
+name = "dotenv"
+version = "0.9.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-dotenv" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b2/b7/545d2c10c1fc15e48653c91efde329a790f2eecfbbf2bd16003b5db2bab0/dotenv-0.9.9-py2.py3-none-any.whl", hash = "sha256:29cf74a087b31dafdb5a446b6d7e11cbce8ed2741540e2339c69fbef92c94ce9", size = 1892 },
+]
+
+[[package]]
 name = "endo-ai"
 version = "0.1.0"
 source = { editable = "." }
@@ -546,6 +557,7 @@ dependencies = [
     { name = "django" },
     { name = "django-log-request-id" },
     { name = "django-oauth-toolkit" },
+    { name = "dotenv" },
     { name = "endoreg-db" },
     { name = "faker" },
     { name = "gender-guesser" },
@@ -581,7 +593,8 @@ requires-dist = [
     { name = "django" },
     { name = "django-log-request-id", specifier = ">=2.1.0" },
     { name = "django-oauth-toolkit", specifier = ">=3.0.1" },
-    { name = "endoreg-db", specifier = "==0.6.4" },
+    { name = "dotenv", specifier = ">=0.9.9" },
+    { name = "endoreg-db", directory = "endoreg-db" },
     { name = "faker", specifier = ">=36.1.1" },
     { name = "gender-guesser", specifier = ">=0.4.0" },
     { name = "icecream" },
@@ -606,8 +619,8 @@ requires-dist = [
 
 [[package]]
 name = "endoreg-db"
-version = "0.6.4"
-source = { registry = "https://pypi.org/simple" }
+version = "0.6.5"
+source = { directory = "endoreg-db" }
 dependencies = [
     { name = "agl-report-reader" },
     { name = "django" },
@@ -615,6 +628,7 @@ dependencies = [
     { name = "django-cors-headers" },
     { name = "django-extensions" },
     { name = "djangorestframework" },
+    { name = "dotenv" },
     { name = "faker" },
     { name = "icecream" },
     { name = "numpy" },
@@ -632,9 +646,32 @@ dependencies = [
     { name = "tqdm" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ae/52/2dea525ce8c6116598b4882a9fe94888dfb183aaead65d7c34dcfa811c43/endoreg_db-0.6.4.tar.gz", hash = "sha256:17124f61dfe5abbef988bea73754a5363aba8b0d4ec07a2186f32eb413e78c10", size = 297860 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/d7/66fff7f1baf838f8f661fd46a123bfaab26012fc12916db1d07b166c216b/endoreg_db-0.6.4-py3-none-any.whl", hash = "sha256:9e1ca8412ced5d78c3f0143ae5f7c84a9daf03d2303feda47534c7508a54fe6d", size = 380087 },
+
+[package.metadata]
+requires-dist = [
+    { name = "agl-report-reader", specifier = ">=0.4.0" },
+    { name = "django", specifier = ">=5.1.3" },
+    { name = "django-bootstrap5", specifier = ">=24.3" },
+    { name = "django-cors-headers", specifier = ">=4.7.0" },
+    { name = "django-extensions", specifier = ">=3.2.3" },
+    { name = "djangorestframework", specifier = ">=3.15.2" },
+    { name = "dotenv", specifier = ">=0.9.9" },
+    { name = "faker", specifier = ">=32.1.0" },
+    { name = "icecream", specifier = ">=2.1.4" },
+    { name = "numpy", specifier = ">=2.1.3" },
+    { name = "opencv-python", specifier = ">=4.10.0.84" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pillow", specifier = ">=11.0.0" },
+    { name = "pydantic", specifier = ">=2.10.6" },
+    { name = "pytesseract", specifier = ">=0.3.13" },
+    { name = "python-ffmpeg", specifier = ">=2.0.12" },
+    { name = "pytorch-lightning", specifier = ">=2.4.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "scikit-learn", specifier = ">=1.5.2" },
+    { name = "scipy", specifier = ">=1.14.1" },
+    { name = "tesseract", specifier = ">=0.1.3" },
+    { name = "tqdm", specifier = ">=4.67.0" },
+    { name = "urllib3", specifier = ">=2.2.3" },
 ]
 
 [[package]]
@@ -1686,6 +1723,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892 },
+]
+
+[[package]]
+name = "python-dotenv"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/88/2c/7bb1416c5620485aa793f2de31d3df393d3686aa8a8506d11e10e13c5baf/python_dotenv-1.1.0.tar.gz", hash = "sha256:41f90bc6f5f177fb41f53e87666db362025010eb28f60a01c9143bfa33a2b2d5", size = 39920 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/18/98a99ad95133c6a6e2005fe89faedf294a748bd5dc803008059409ac9b1e/python_dotenv-1.1.0-py3-none-any.whl", hash = "sha256:d7c01d9e2293916c18baf562d95698754b0dbbb5e74d457c45d4f6561fb9d55d", size = 20256 },
 ]
 
 [[package]]
