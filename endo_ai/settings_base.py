@@ -13,16 +13,23 @@ from keycloak import KeycloakOpenID
 from pathlib import Path
 import os
 import sys
+import dotenv
+from icecream import ic
+from endoreg_db.utils.paths import (
+    STORAGE_DIR,
+)
+dotenv.load_dotenv()
+
+def get_env_var(key):
+    value = os.getenv(key)
+    if value:
+        return value.strip('"\'') # Strip both single and double quotes
+    return None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).parent.parent
+ic(f"endo_ai.settings_base.py - BASE_DIR: {BASE_DIR}")
 
-# Override default if DJANGO_PSEUDO_DIR is set.
-PSEUDO_DIR = Path(
-    os.environ.get("DJANGO_PSEUDO_DIR", BASE_DIR / "erc_data")
-).expanduser()
-
-sys.path.insert(0, str(BASE_DIR / "endoreg-db-production"))
 
 SECRET_SALT = os.environ.get(
     "DJANGO_SECRET_SALT",
@@ -33,9 +40,6 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-ehohvfo*#^_blfeo_n$p31v2+&ylp$(1$96d%5!0y(-^l28x-6",
 )
-
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -65,7 +69,7 @@ for p in STATICFILES_DIRS:
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media files
-MEDIA_ROOT = PSEUDO_DIR
+MEDIA_ROOT = STORAGE_DIR
 MEDIA_URL = "/media/"
 
 # Application definition
