@@ -31,12 +31,12 @@ IMPORT_VIDEO = args.import_video or args.all
 VIDEO_NAME = args.video_name
 
 
-# Function to get and strip quotes from env var
-def get_env_var(key):
-    value = os.getenv(key)
-    if value:
-        return value.strip('"\'') # Strip both single and double quotes
-    return None
+import os
+from pathlib import Path
+import dotenv
+from endoreg_db.utils.paths import data_paths
+dotenv.load_dotenv()
+from endo_ai.settings_base import get_env_var
 
 
 print("Loading environment variables from .env file...")
