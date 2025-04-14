@@ -42,8 +42,8 @@ dependencies = [
     "django",
     "django-log-request-id>=2.1.0",
     "django-oauth-toolkit>=3.0.1",
-    "endoreg-db==0.6.4",
     "faker>=36.1.1",
+    "endoreg-db==0.6.5",
     "gender-guesser>=0.4.0",
     "icecream",
     "opencv-python",
@@ -63,6 +63,7 @@ dependencies = [
     "torchaudio",
     "torchvision",
     "whitenoise",
+    "dotenv>=0.9.9",
 ]
 
 [build-system]
@@ -74,3 +75,4 @@ packages = ["endo_ai"]
 
 [tool.uv.sources]
 endo-ai = { path = "endo_ai" }
+endoreg-db = { path = "endoreg-db" }

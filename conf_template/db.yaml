@@ -1,6 +1,6 @@
 engine: django.db.backends.postgresql
 name: endoregDbLocal
 user: endoregDbLocal
-password_file: /var/endoreg-service-user/secrets/vault/SCRT_local_password_maintenance_password
+password_file: conf/db_pwd
 host: localhost
 port: 5432
