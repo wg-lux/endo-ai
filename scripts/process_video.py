@@ -4,11 +4,31 @@ import dotenv
 from endoreg_db.utils.paths import STORAGE_DIR
 dotenv.load_dotenv()
 
-RM_DB_SQLITE = True
-MIGRATE_DB = True
-LOAD_BASE_DB_DATA = True
-LOAD_MODEL = True
-IMPORT_VIDEO = True
+import os
+from pathlib import Path
+import dotenv
+from endoreg_db.utils.paths import data_paths
+dotenv.load_dotenv()
+import argparse
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Process video and manage database operations.')
+parser.add_argument('--rm-db', action='store_true', help='Remove SQLite database')
+parser.add_argument('--migrate', action='store_true', help='Run database migrations')
+parser.add_argument('--load-base-data', action='store_true', help='Load base data into database')
+parser.add_argument('--load-model', action='store_true', help='Load AI model')
+parser.add_argument('--import-video', action='store_true', help='Import video file')
+parser.add_argument('--video-name', default="NINJAU_S001_S001_T018.mp4", help='Name of video file to import')
+parser.add_argument('--all', action='store_true', help='Run all operations')
+args = parser.parse_args()
+
+# Set flags based on arguments
+RM_DB_SQLITE = args.rm_db or args.all
+MIGRATE_DB = args.migrate or args.all
+LOAD_BASE_DB_DATA = args.load_base_data or args.all
+LOAD_MODEL = args.load_model or args.all
+IMPORT_VIDEO = args.import_video or args.all
+VIDEO_NAME = args.video_name
 
 
 # Function to get and strip quotes from env var
