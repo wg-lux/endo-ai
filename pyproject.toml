@@ -33,6 +33,7 @@ classifiers = [
 
 dependencies = [
     "agl-frame-extractor",
+    "lx-anonymizer",
     "agl-report-reader>=0.4.0",
     "albumentations",
     "asgiref",
@@ -47,6 +48,7 @@ dependencies = [
     "gender-guesser>=0.4.0",
     "icecream",
     "opencv-python",
+    "pip>=25.0.1",
     "psutil>=7.0.0",
     "psycopg[binary]",
     "pydantic",
@@ -74,3 +76,4 @@ packages = ["endo_ai"]
 
 [tool.uv.sources]
 endo-ai = { path = "endo_ai" }
+lx-anonymizer = { path = "lx_anonymizer" }
