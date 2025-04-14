@@ -135,7 +135,8 @@ class Command(BaseCommand):
             pdf_path, verbose=verbose
         )
         ic(text, anonymized_text, report_meta)
-        report_file_obj.process_file(text, anonymized_text, report_meta, verbose=verbose) #TODO Implement lx-anonymizer
+        
+        report_file_obj.process_file(self, text, anonymized_text, report_meta, verbose=verbose)
         
         sensitive_meta = report_file_obj.sensitive_meta
         ic(report_file_obj.sensitive_meta)

@@ -51,8 +51,7 @@ in
     ffmpeg-headless.bin
     tesseract
     pkgs.zsh
-  
-
+    ollama
   ];
 
   env = {
