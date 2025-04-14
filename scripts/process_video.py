@@ -44,7 +44,16 @@ VIDEO_NAME="NINJAU_S001_S001_T018.mp4"
 # ###########
 #  reset db.sqlite3
 if RM_DB_SQLITE:
-    _ = subprocess.run(["rm", "db.sqlite3"], check=False)
+    db_file = Path("db.sqlite3")
+    if db_file.exists():
+        try:
+            result = subprocess.run(["rm", str(db_file)], check=True, capture_output=True)
+            print(f"Database file removed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to remove database file: {e}")
+            print(f"Error output: {e.stderr.decode('utf-8')}")
+    else:
+        print("Database file does not exist, skipping removal.")
 
 #############################################################
 ########### RUNNING DJANGO MANAGEMENT COMMANDS ###################
