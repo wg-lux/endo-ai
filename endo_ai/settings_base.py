@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import sys
 import dotenv
+from icecream import ic
 from endoreg_db.utils.paths import (
     STORAGE_DIR,
 )
@@ -26,7 +27,8 @@ def get_env_var(key):
     return None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(os.getcwd())
+BASE_DIR = Path(__file__).parent.parent
+ic(f"endo_ai.settings_base.py - BASE_DIR: {BASE_DIR}")
 
 
 SECRET_SALT = os.environ.get(
