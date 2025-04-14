@@ -1,6 +1,12 @@
 engine: django.db.backends.postgresql
 name: endoregDbLocal
 user: endoregDbLocal
+# password_file specifies the path to a file containing the database password.
+# This path should be relative to the project's root directory (where devenv.nix resides).
+# The env_setup.py script will create this file with a default password
+# if it doesn't exist during environment initialization (`devenv tasks run env:build`).
+# Ensure the file contains only the password string.
+# Example: /home/admin/dev/endo-ai/conf/db_pwd
 password_file: conf/db_pwd
 host: localhost
 port: 5432

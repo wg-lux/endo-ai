@@ -5,7 +5,10 @@ import json
 from pathlib import Path
 import shutil
 
-# Load variables from Nix
+# --- Constants ---
+DEFAULT_DB_PASSWORD = "changeme_in_production" # Placeholder password
+
+# --- Load Nix Variables ---
 nix_vars = {}
 nix_vars_path = Path("./.devenv-vars.json")
 if nix_vars_path.exists():
@@ -15,102 +18,174 @@ if nix_vars_path.exists():
 else:
     print("No Nix variables file found at .devenv-vars.json")
 
-# use python pathlib to get home and working dir
-home_dir = nix_vars.get("HOME_DIR", os.path.expanduser("~"))
-working_dir = nix_vars.get("WORKING_DIR", os.path.abspath(os.getcwd()))
+# --- Determine Paths ---
+# Use WORKING_DIR from Nix vars or fallback to os.getcwd()
+working_dir_str = nix_vars.get("WORKING_DIR", os.path.abspath(os.getcwd()))
+working_dir = Path(working_dir_str)
 
+# Use CONF_DIR from Nix vars or fallback to default relative path
+conf_dir_rel = nix_vars.get("CONF_DIR", "conf")
+conf_dir = (working_dir / conf_dir_rel).resolve()
+db_pwd_file = conf_dir / "db_pwd"
+
+# Update nix_vars with resolved absolute paths for consistency if needed elsewhere
+nix_vars["WORKING_DIR"] = str(working_dir)
+nix_vars["CONF_DIR"] = str(conf_dir) # Store absolute conf path
+home_dir = nix_vars.get("HOME_DIR", os.path.expanduser("~")) # Keep home_dir logic
 nix_vars["HOME_DIR"] = home_dir
-nix_vars["WORKING_DIR"] = working_dir
 
+# --- Generate Secrets ---
 SALT = get_random_secret_key()
 SECRET_KEY = get_random_secret_key()
 
-template = Path("./conf_template/default.env")
-target = Path("./.env")
+# --- Ensure conf dir and db_pwd file exist ---
+print(f"Checking configuration directory: {conf_dir}")
+if not conf_dir.exists():
+    print(f"Creating configuration directory: {conf_dir}")
+    conf_dir.mkdir(parents=True, exist_ok=True)
+else:
+    print("Configuration directory already exists.")
 
-# Create a new .env file or use the existing template
+print(f"Checking database password file: {db_pwd_file}")
+if not db_pwd_file.exists():
+    print(f"Database password file not found. Creating '{db_pwd_file}' with default password.")
+    try:
+        with open(db_pwd_file, 'w', encoding='utf-8') as f:
+            f.write(DEFAULT_DB_PASSWORD)
+        print(f"Successfully created '{db_pwd_file}'. IMPORTANT: Change the default password for production!")
+    except IOError as e:
+        print(f"ERROR: Failed to create database password file '{db_pwd_file}': {e}")
+else:
+    print("Database password file already exists.")
+
+
+# --- Manage .env file ---
+template = Path("./conf_template/default.env")
+target = Path(".env") # .env should be in the working_dir (project root)
+
+# Create a new .env file from template if it doesn't exist
 if not target.exists():
-    shutil.copy(template, target)
-    
-# Track what we've found or added
+    print(f"Creating .env file from template: {template}")
+    try:
+        shutil.copy(template, target)
+    except Exception as e:
+        print(f"Error copying template {template} to {target}: {e}")
+else:
+    print(".env file already exists. Updating...")
+
+# Track what we've found or added in .env
 found_keys = set()
 
-# Read existing entries
-with target.open("r", encoding="utf-8") as f:
-    lines = f.readlines()
+# Read existing entries from .env
+lines = []
+if target.exists():
+    try:
+        with target.open("r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except IOError as e:
+        print(f"Error reading .env file {target}: {e}")
+
 
 # Process and update entries
 updated_lines = []
+django_module_from_nix = nix_vars.get("DJANGO_MODULE")
+
 for line in lines:
     stripped_line = line.strip()
     if not stripped_line or stripped_line.startswith("#"):
         updated_lines.append(line)
         continue
-        
+
     if "=" not in stripped_line:
         updated_lines.append(line)
         continue
-        
+
     key, value = stripped_line.split("=", 1)
     key = key.strip()
     found_keys.add(key)
-    
-    # Replace values from nix_vars if present
-    if key == "DJANGO_SETTINGS_MODULE" and "DJANGO_MODULE" in nix_vars:
-        updated_lines.append(f"{key}={nix_vars['DJANGO_MODULE']}.settings_dev\n")
-    elif key == "DJANGO_SETTINGS_MODULE_PRODUCTION" and "DJANGO_MODULE" in nix_vars:
-        updated_lines.append(f"{key}={nix_vars['DJANGO_MODULE']}.settings_prod\n")
-    elif key == "DJANGO_SETTINGS_MODULE_DEVELOPMENT" and "DJANGO_MODULE" in nix_vars:
-        updated_lines.append(f"{key}={nix_vars['DJANGO_MODULE']}.settings_dev\n")
-    else:
-        updated_lines.append(line)
 
-# Write updated content back
-with target.open("w", encoding="utf-8") as f:
-    f.writelines(updated_lines)
+    # Replace specific values from nix_vars if present
+    if django_module_from_nix:
+        if key == "DJANGO_SETTINGS_MODULE":
+            updated_lines.append(f'{key}="{django_module_from_nix}.settings_dev"\n')
+            continue
+        elif key == "DJANGO_SETTINGS_MODULE_PRODUCTION":
+            updated_lines.append(f'{key}="{django_module_from_nix}.settings_prod"\n')
+            continue
+        elif key == "DJANGO_SETTINGS_MODULE_DEVELOPMENT":
+            updated_lines.append(f'{key}="{django_module_from_nix}.settings_dev"\n')
+            continue
 
-# Add any missing required entries
-with target.open("a", encoding="utf-8") as f:
-    if "DJANGO_SECRET_KEY" not in found_keys:
-        f.write(f'\nDJANGO_SECRET_KEY="{SECRET_KEY}"')
-        
-    if "DJANGO_SALT" not in found_keys:
-        f.write(f'\nDJANGO_SALT="{SALT}"')
-    
-    # Add default values for variables that might not be in nix_vars
-    default_values = {
-        "TEST_RUN": "False",
-        "TEST_RUN_FRAME_NUMBER": "1000",
-        "RUST_BACKTRACE": "1",
-        "DJANGO_DEBUG": "True",
-        "DJANGO_FFMPEG_EXTRACT_FRAME_BATCHSIZE": "500"
-    }
-    
-    # Add more variables from nix_vars
-    for var_name, prefix in [
-        ("HOST", "DJANGO_HOST"),
-        ("PORT", "DJANGO_PORT"),
-        ("DATA_DIR", "DJANGO_DATA_DIR"),
-        ("CONF_DIR", "DJANGO_CONF_DIR"),
-        ("HOME_DIR", "HOME_DIR"),
-        ("WORKING_DIR", "WORKING_DIR"),
-    ]:
-        if var_name in nix_vars and prefix not in found_keys:
-            f.write(f'\n{prefix}="{nix_vars[var_name]}"')
-    
-    # Special case for DJANGO_MODULE to add all settings variants
-    if "DJANGO_MODULE" in nix_vars:
-        module = nix_vars["DJANGO_MODULE"]
-        if "DJANGO_SETTINGS_MODULE" not in found_keys:
-            f.write(f'\nDJANGO_SETTINGS_MODULE="{module}.settings_dev"')
-        if "DJANGO_SETTINGS_MODULE_PRODUCTION" not in found_keys:
-            f.write(f'\nDJANGO_SETTINGS_MODULE_PRODUCTION="{module}.settings_prod"')
-        if "DJANGO_SETTINGS_MODULE_DEVELOPMENT" not in found_keys:
-            f.write(f'\nDJANGO_SETTINGS_MODULE_DEVELOPMENT="{module}.settings_dev"')
-    
-    # Add default values for missing variables
-    for var_name, default_value in default_values.items():
-        if var_name not in found_keys:
-            f.write(f'\n{var_name}={default_value}')
+    # Keep existing line if no specific update rule matched
+    updated_lines.append(line)
 
-print(f"Environment file updated at {target}")
+
+# Write updated content back to .env
+try:
+    with target.open("w", encoding="utf-8") as f:
+        f.writelines(updated_lines)
+except IOError as e:
+    print(f"Error writing updated .env file {target}: {e}")
+
+# Add any missing required entries to .env
+try:
+    with target.open("a", encoding="utf-8") as f:
+        # Add secrets if missing
+        if "DJANGO_SECRET_KEY" not in found_keys:
+            f.write(f'\nDJANGO_SECRET_KEY="{SECRET_KEY}"')
+            print("Added DJANGO_SECRET_KEY to .env")
+
+        if "DJANGO_SALT" not in found_keys:
+            f.write(f'\nDJANGO_SALT="{SALT}"')
+            print("Added DJANGO_SALT to .env")
+
+        # Add paths and config from nix_vars if missing
+        # Ensure paths are quoted
+        vars_to_add = {
+            "DJANGO_HOST": nix_vars.get("HOST"),
+            "DJANGO_PORT": nix_vars.get("PORT"),
+            # Store absolute path for CONF_DIR now
+            "DJANGO_CONF_DIR": str(conf_dir),
+            "HOME_DIR": nix_vars.get("HOME_DIR"),
+            "WORKING_DIR": nix_vars.get("WORKING_DIR"),
+            # Add other derived paths if needed by the application via .env
+            "DJANGO_DATA_DIR": str(working_dir / nix_vars.get("DATA_DIR", "data")),
+            "DJANGO_IMPORT_DATA_DIR": str(working_dir / nix_vars.get("IMPORT_DIR", "data/import")),
+            "DJANGO_VIDEO_IMPORT_DATA_DIR": str(working_dir / nix_vars.get("IMPORT_DIR", "data/import") / "video"),
+        }
+        for key, value in vars_to_add.items():
+             if value is not None and key not in found_keys:
+                 f.write(f'\n{key}="{value}"')
+                 print(f"Added {key} to .env")
+
+        # Add Django settings module variants if missing and module name is known
+        if django_module_from_nix:
+            settings_variants = {
+                "DJANGO_SETTINGS_MODULE": f"{django_module_from_nix}.settings_dev",
+                "DJANGO_SETTINGS_MODULE_PRODUCTION": f"{django_module_from_nix}.settings_prod",
+                "DJANGO_SETTINGS_MODULE_DEVELOPMENT": f"{django_module_from_nix}.settings_dev",
+            }
+            for key, value in settings_variants.items():
+                if key not in found_keys:
+                    f.write(f'\n{key}="{value}"')
+                    print(f"Added {key} to .env")
+
+        # Add other defaults if missing
+        default_values = {
+            "TEST_RUN": "False",
+            "TEST_RUN_FRAME_NUMBER": "1000",
+            "RUST_BACKTRACE": "1",
+            "DJANGO_DEBUG": "True",
+            "DJANGO_FFMPEG_EXTRACT_FRAME_BATCHSIZE": "500"
+        }
+        for key, value in default_values.items():
+            if key not in found_keys:
+                # Booleans/numbers don't strictly need quotes, but can have them
+                f.write(f'\n{key}={value}')
+                print(f"Added {key} to .env")
+
+except IOError as e:
+    print(f"Error appending missing entries to .env file {target}: {e}")
+
+
+print(f"Environment setup script finished. Check {target} and {db_pwd_file}")
