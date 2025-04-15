@@ -117,6 +117,14 @@ in
       description = "Generate/update .env file with secrets and config";
       exec = "export-nix-vars && ${uv} run env_setup.py";
     };
+    "env:clean" = {
+      description = "Remove the uv virtual environment for a clean sync";
+      exec = ''
+        echo "Removing uv virtual environment: .devenv/state/venv"
+        rm -rf .devenv/state/venv
+        echo "Environment cleaned. Re-enter the shell (e.g., 'exit' then 'devenv up') to trigger uv sync."
+      '';
+    };
 
     # Directory Setup
     "setup:dirs" = {
@@ -128,6 +136,10 @@ in
     "db:makemigrations" = {
       description = "Create Django database migrations";
       exec = "${uv} run python manage.py makemigrations";
+    };
+    "db:merge-migrations" = {
+      description = "Merge conflicting Django database migrations";
+      exec = "${uv} run python manage.py makemigrations --merge";
     };
     "db:migrate" = {
       description = "Apply Django database migrations";
@@ -147,8 +159,6 @@ in
       description = "Initialize configuration files";
       exec = "${uv} run python scripts/make_conf.py";
     };
-
-    
 
     # Static Files
     "static:collect" = {
@@ -177,19 +187,45 @@ in
 
   # --- Shell Entry Hook ---
   enterShell = ''
+    # Ensure dependencies are synced using uv
+    # Check if venv exists. If not, run sync verbosely. If it exists, sync quietly.
+    if [ ! -d ".devenv/state/venv" ]; then
+       echo "Virtual environment not found. Running initial uv sync..."
+       ${uv} sync || echo "Error: Initial uv sync failed. Please check network and pyproject.toml."
+    else
+       # Sync quietly if venv exists
+       ${uv} sync --quiet || echo "Warning: uv sync failed. Environment might be outdated."
+    fi
+
     # Activate Python virtual environment managed by uv
+    ACTIVATED=false
     if [ -f ".devenv/state/venv/bin/activate" ]; then
       source .devenv/state/venv/bin/activate
+      ACTIVATED=true
+      echo "Virtual environment activated."
     else
-      echo "Warning: uv virtual environment activation script not found."
+      echo "Warning: uv virtual environment activation script not found. Run 'devenv task run env:clean' and re-enter shell."
     fi
 
     # Check if .env exists and is not empty, run env:build if needed
     if [ ! -s .env ]; then
       echo "Notice: .env file is missing or empty. Running 'devenv task run env:build'..."
+      # Use the Nix path to uv directly as venv might not be active yet if sync failed
       ${config.tasks."env:build".exec}
     fi
 
     echo "Development environment ready."
+
+    # Add checks only if venv was activated
+    if [ "$ACTIVATED" = true ]; then
+      echo "--- Environment Checks ---"
+      # Check endoreg-db installation location
+      echo "Checking endoreg-db installation:"
+      ${uv} pip show endoreg-db | grep Location || echo "  endoreg-db not found or 'uv pip show' failed."
+      # Check if endoreg-db is installed in editable mode
+      echo "Checking editable installs:"
+      ${uv} pip list --editable | grep endoreg-db || echo "  endoreg-db is not installed in editable mode."
+      echo "-------------------------"
+    fi
   '';
 }
