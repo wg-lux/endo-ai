@@ -78,3 +78,4 @@ packages = ["endo_ai"]
 [tool.uv.sources]
 endo-ai = { path = "endo_ai" }
 endoreg-db = { path = "endoreg-db" }
+lx-anonymizer = { path = "lx-anonymizer" }
