@@ -184,7 +184,8 @@ KEYCLOAK_SERVER_URL = os.environ.get("KEYCLOAK_SERVER_URL", "")
 KEYCLOAK_REALM = os.environ.get("KEYCLOAK_REALM", "")
 KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "")
 KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "")
-KEYCLOAK_OPENID_CONFIG_URL = os.environ.get("KEYCLOAK_OPENID_CONFIG_URL", "")
+#KEYCLOAK_OPENID_CONFIG_URL = os.environ.get("KEYCLOAK_OPENID_CONFIG_URL", "")
+KEYCLOAK_OPENID_CONFIG_URL = f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid-configuration"
 
 
 keycloak_openid = KeycloakOpenID(
@@ -214,7 +215,7 @@ REST_FRAMEWORK = {
 }
 
 # To test the protect url  http://127.0.0.1:8000/api/videos/, turn this to True
-ENABLE_KEYCLOAK_AUTH = False 
+ENABLE_KEYCLOAK_AUTH = False
 
 
 ## For  Enable structured logging (JSON) in Django 

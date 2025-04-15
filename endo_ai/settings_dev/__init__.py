@@ -32,8 +32,10 @@ from endo_ai.settings_base import (
     REST_FRAMEWORK,
     ENABLE_KEYCLOAK_AUTH,
     SECRET_KEY,
-    LOGGING, #for json log
-    REQUEST_ID_HEADER
+    #LOGGING, #for json log
+    #REQUEST_ID_HEADER
+
+
 )
 
 DEBUG = True
