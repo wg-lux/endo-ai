@@ -118,10 +118,12 @@ in
       exec = "export-nix-vars && ${uv} run env_setup.py";
     };
     "env:clean" = {
-      description = "Remove the uv virtual environment for a clean sync";
+      description = "Remove the uv virtual environment and lock file for a clean sync";
       exec = ''
         echo "Removing uv virtual environment: .devenv/state/venv"
         rm -rf .devenv/state/venv
+        echo "Removing uv lock file: uv.lock"
+        rm -f uv.lock
         echo "Environment cleaned. Re-enter the shell (e.g., 'exit' then 'devenv up') to trigger uv sync."
       '';
     };
@@ -187,14 +189,18 @@ in
 
   # --- Shell Entry Hook ---
   enterShell = ''
+    # Define commands as shell variables using the 'uv' helper variable
+    export SYNC_CMD="${uv} sync" # Use the 'uv' variable defined in the let block
+
     # Ensure dependencies are synced using uv
     # Check if venv exists. If not, run sync verbosely. If it exists, sync quietly.
     if [ ! -d ".devenv/state/venv" ]; then
        echo "Virtual environment not found. Running initial uv sync..."
-       ${uv} sync || echo "Error: Initial uv sync failed. Please check network and pyproject.toml."
+       $SYNC_CMD || echo "Error: Initial uv sync failed. Please check network and pyproject.toml."
     else
        # Sync quietly if venv exists
-       ${uv} sync --quiet || echo "Warning: uv sync failed. Environment might be outdated."
+       echo "Syncing Python dependencies with uv..."
+       $SYNC_CMD --quiet || echo "Warning: uv sync failed. Environment might be outdated."
     fi
 
     # Activate Python virtual environment managed by uv
@@ -222,9 +228,22 @@ in
       # Check endoreg-db installation location
       echo "Checking endoreg-db installation:"
       ${uv} pip show endoreg-db | grep Location || echo "  endoreg-db not found or 'uv pip show' failed."
-      # Check if endoreg-db is installed in editable mode
+
+      # Check lx-anonymizer installation location (more reliably via list --editable)
+      echo "Checking lx-anonymizer installation (editable):"
+      if ${uv} pip list --editable | grep -q lx-anonymizer; then
+          echo "  lx-anonymizer found in editable installs."
+          # Optionally, still try pip show for location info, but treat failure as less critical
+          ${uv} pip show lx-anonymizer | grep Location || echo "  'uv pip show lx-anonymizer' could not retrieve location details (expected if not on PyPI)."
+      else
+          echo "  lx-anonymizer NOT found in editable installs. Check 'uv sync' output and 'pyproject.toml' [tool.uv.sources]."
+          echo "  Ensure the directory './lx-anonymizer' exists and contains a valid package."
+      fi
+
+      # Check if local packages are installed in editable mode
       echo "Checking editable installs:"
-      ${uv} pip list --editable | grep endoreg-db || echo "  endoreg-db is not installed in editable mode."
+      # Check endo-ai, endoreg-db, and lx-anonymizer
+      ${uv} pip list --editable | grep -E 'endo-ai|endoreg-db|lx-anonymizer' || echo "  Local packages (endo-ai, endoreg-db, lx-anonymizer) not found in editable installs."
       echo "-------------------------"
     fi
   '';
