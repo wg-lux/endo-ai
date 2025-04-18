@@ -2,7 +2,7 @@ import os
 import django
 from pathlib import Path
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "endo_ai.settings_dev")
+os.environ.setdefault(key="DJANGO_SETTINGS_MODULE", value="endo_ai.settings_dev")
 django.setup()
 
 dev_out = Path("./data/dev_out.txt")

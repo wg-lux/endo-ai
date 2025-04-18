@@ -104,16 +104,16 @@ for line in lines:
     key = key.strip()
     found_keys.add(key)
 
-    # Replace specific values from nix_vars if present
+    # Replace specific values from nix_vars if present, without quotes
     if django_module_from_nix:
         if key == "DJANGO_SETTINGS_MODULE":
-            updated_lines.append(f'{key}="{django_module_from_nix}.settings_dev"\n')
+            updated_lines.append(f'{key}={django_module_from_nix}.settings_dev\n')
             continue
         elif key == "DJANGO_SETTINGS_MODULE_PRODUCTION":
-            updated_lines.append(f'{key}="{django_module_from_nix}.settings_prod"\n')
+            updated_lines.append(f'{key}={django_module_from_nix}.settings_prod\n')
             continue
         elif key == "DJANGO_SETTINGS_MODULE_DEVELOPMENT":
-            updated_lines.append(f'{key}="{django_module_from_nix}.settings_dev"\n')
+            updated_lines.append(f'{key}={django_module_from_nix}.settings_dev\n')
             continue
 
     # Keep existing line if no specific update rule matched
@@ -127,35 +127,33 @@ try:
 except IOError as e:
     print(f"Error writing updated .env file {target}: {e}")
 
-# Add any missing required entries to .env
+# Add any missing required entries to .env without quotes
 try:
     with target.open("a", encoding="utf-8") as f:
         # Add secrets if missing
         if "DJANGO_SECRET_KEY" not in found_keys:
-            f.write(f'\nDJANGO_SECRET_KEY="{SECRET_KEY}"')
+            f.write(f'\nDJANGO_SECRET_KEY={SECRET_KEY}') # No quotes
             print("Added DJANGO_SECRET_KEY to .env")
 
         if "DJANGO_SALT" not in found_keys:
-            f.write(f'\nDJANGO_SALT="{SALT}"')
+            f.write(f'\nDJANGO_SALT={SALT}') # No quotes
             print("Added DJANGO_SALT to .env")
 
         # Add paths and config from nix_vars if missing
-        # Ensure paths are quoted
+        # Ensure paths are NOT quoted
         vars_to_add = {
             "DJANGO_HOST": nix_vars.get("HOST"),
             "DJANGO_PORT": nix_vars.get("PORT"),
-            # Store absolute path for CONF_DIR now
             "DJANGO_CONF_DIR": str(conf_dir),
             "HOME_DIR": nix_vars.get("HOME_DIR"),
             "WORKING_DIR": nix_vars.get("WORKING_DIR"),
-            # Add other derived paths if needed by the application via .env
             "DJANGO_DATA_DIR": str(working_dir / nix_vars.get("DATA_DIR", "data")),
             "DJANGO_IMPORT_DATA_DIR": str(working_dir / nix_vars.get("IMPORT_DIR", "data/import")),
             "DJANGO_VIDEO_IMPORT_DATA_DIR": str(working_dir / nix_vars.get("IMPORT_DIR", "data/import") / "video"),
         }
         for key, value in vars_to_add.items():
              if value is not None and key not in found_keys:
-                 f.write(f'\n{key}="{value}"')
+                 f.write(f'\n{key}={value}') # No quotes
                  print(f"Added {key} to .env")
 
         # Add Django settings module variants if missing and module name is known
@@ -167,7 +165,7 @@ try:
             }
             for key, value in settings_variants.items():
                 if key not in found_keys:
-                    f.write(f'\n{key}="{value}"')
+                    f.write(f'\n{key}={value}') # No quotes
                     print(f"Added {key} to .env")
 
         # Add other defaults if missing
@@ -176,12 +174,12 @@ try:
             "TEST_RUN_FRAME_NUMBER": "1000",
             "RUST_BACKTRACE": "1",
             "DJANGO_DEBUG": "True",
-            "DJANGO_FFMPEG_EXTRACT_FRAME_BATCHSIZE": "500"
+            "DJANGO_FFMPEG_EXTRACT_FRAME_BATCHSIZE": "500",
+            "LABEL_VIDEO_SEGMENT_MIN_DURATION_S_FOR_ANNOTATION": "3" # Added missing default
         }
         for key, value in default_values.items():
             if key not in found_keys:
-                # Booleans/numbers don't strictly need quotes, but can have them
-                f.write(f'\n{key}={value}')
+                f.write(f'\n{key}={value}') # No quotes
                 print(f"Added {key} to .env")
 
 except IOError as e:
