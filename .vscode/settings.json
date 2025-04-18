@@ -2,5 +2,5 @@
   "python.linting.pylintArgs": ["--rcfile", "${workspaceFolder}/.pylintrc"],
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
-  "python.analysis.extraPaths": ["./endoreg_db_production"]
+  "python.analysis.extraPaths": ["./endoreg-db", "./lx-anonymizer"]
 }
