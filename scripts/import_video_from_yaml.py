@@ -29,10 +29,9 @@ from endoreg_db.models import (
     Label,
     LabelVideoSegment,
     Gender,
-    SensitiveMeta,
     VideoMeta,
     EndoscopyProcessor,
-    Endoscope
+    Endoscope,
 )
 
 # --- Configuration ---
@@ -188,11 +187,11 @@ def import_video_from_yaml(file_path: Path):
             # 5. Create or Update Video
             video_file_path = video_data.get('file')
             video_uuid = video_data.get('uuid')
-            assert video_uuid, "UUID is required for Video object creation."
+            video_uuid = video_data.get('uuid')
+            if not video_uuid:
+                raise ValueError("UUID is required for Video object creation.")
             if not video_file_path:
                 raise ValueError("Video file path is missing in YAML data.")
-
-            if os.path.isabs(video_file_path):
                 ic(f"Warning: Video file path '{video_file_path}' appears absolute. Expected relative path. Attempting import anyway.")
 
             existing_video = Video.objects.filter(uuid=video_uuid).first()

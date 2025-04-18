@@ -1,3 +1,4 @@
+import argparse
 import os
 import django
 # --- Django Setup ---
@@ -20,10 +21,22 @@ from endoreg_db.models import (
     Video
 )
 
-v = Video.objects.first()
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Extract frames from a video')
+parser.add_argument('--video_id', type=int, help='ID of the video to extract frames from')
+args = parser.parse_args()
+
+# Get video based on arguments or default to first
+if args.video_id:
+    v = Video.objects.filter(pk=args.video_id).first()
+    if v is None:
+        print(f"No video found with ID {args.video_id}")
+        exit(1)
+else:
+    v = Video.objects.first()
 
 assert v is not None, "No video found in the database. Please ensure you have a video to work with."
-
 v.extract_frames()
 v.set_frames_extracted()
 

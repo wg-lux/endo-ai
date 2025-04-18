@@ -81,7 +81,7 @@ except Exception as e:
     raise
 
 # --- Model Import (After django.setup) ---
-from endoreg_db.models import AiModel
+from endoreg_db.models import AiModel, ModelMeta
 
 # --- Paths (After django.setup if they depend on settings) ---
 storage_dir = data_paths["storage"]
@@ -117,7 +117,12 @@ if LOAD_MODEL:
     print("Calling create_multilabel_model_meta command...")
     MODEL_PATH_STR = "~/test-data/model/colo_segmentation_RegNetX800MF_6.ckpt"
     expanded_model_path = Path(MODEL_PATH_STR).expanduser().resolve()
-    print(f"Expanded Model Path: {expanded_model_path}")
+    if not expanded_model_path.exists():
+        raise FileNotFoundError(
+            f"Model checkpoint not found at {expanded_model_path}. "
+            "Update MODEL_PATH_STR or ensure the file is present."
+        )
+    print(f"Using model checkpoint: {expanded_model_path}")
     try:
         # First, ensure the AiModel exists or create it if necessary
         MODEL_TO_USE, created = AiModel.objects.get_or_create(
@@ -182,9 +187,8 @@ if PREDICT_VIDEO:
             # The command itself will raise ModelMeta.DoesNotExist if it can't find the meta
             out = call_command("predict_raw_video_files")
             print(out)
-        except Exception as e:
-            print(f"ERROR during prediction: {e}") # Catch errors from the command call
-            # This might include the ModelMeta.DoesNotExist error if meta creation failed earlier
+        except ModelMeta.DoesNotExist as e:  
+            print(f"ERROR: {e}. Did you forget to run --load-model?")  
     else:
         print("Skipping prediction because the required AiModel could not be found.")
 
