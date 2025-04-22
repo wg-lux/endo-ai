@@ -5,13 +5,12 @@ from endoreg_db.models import (
     Video,
 )
 
+from endoreg_db.serializers.sync.video import (
+    VideoSerializer
+)
 from endoreg_db.utils import data_paths
 import yaml
-from endoreg_db.serializers.export_patient_examination import ExportPatientExaminationSerializer
-
 EXAMINATION_EXPORT_DIR = data_paths["examination_export"]
-
-
 
 class Command(BaseCommand):
     """Export anonymized video examination data to YAML files."""
@@ -42,8 +41,8 @@ class Command(BaseCommand):
 
         for video in videos:
             try:
-                serializer = ExportPatientExaminationSerializer(video)
-                patient_examination_data = serializer.data
+                serializer = VideoSerializer(video)
+                video_data = serializer.data
                 
                 export_path = EXAMINATION_EXPORT_DIR / f"{video.uuid}.yaml"
                 export_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
@@ -52,7 +51,7 @@ class Command(BaseCommand):
                 with open(export_path, "w", encoding="utf-8") as file:
                     # Use default_flow_style=False and explicitly specify Dumper
                     yaml.dump(
-                        patient_examination_data,
+                        video_data,
                         file,
                         allow_unicode=True,
                         default_flow_style=False,

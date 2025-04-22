@@ -18,6 +18,8 @@ from endoreg_db.utils.paths import data_paths
 # Full Pipeline (Short Video)
 # # python scripts/process_video.py --rm-db --migrate --load-base-data --load-model --import-video --video-name NINJAU_S001_S001_T023.mp4
 
+# python scripts/process_video.py --all --video-name NINJAU_S001_S001_T023.mp4
+
 # Predict Videos
 # # python scripts/process_video.py --predict
 
