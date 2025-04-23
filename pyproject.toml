@@ -65,15 +65,8 @@ dependencies = [
     "torchaudio",
     "torchvision",
     "whitenoise",
-    "dotenv>=0.9.9",
-]
-
-[project.optional-dependencies]
-dev = [
-    # Add development tools here, e.g.:
-    # "pytest",
-    # "ruff",
-    # "black",
+    "dotenv",
+    "endoreg-db"
 ]
 
 [build-system]
@@ -84,9 +77,6 @@ build-backend = "hatchling.build"
 packages = ["endo_ai"]
 
 [tool.uv.sources]
-# This section tells uv (used by devenv) to use local paths instead of PyPI
-# uv should install these editably by default for path sources.
-# Ensure the paths are correct relative to *this* pyproject.toml file.
-# Ensure the target directories contain their own pyproject.toml or setup.py.
-endoreg-db = { path = "endoreg-db", editable = true } # Explicitly editable
-lx-anonymizer = { path = "lx-anonymizer", editable = true } # Explicitly editable
+endo-ai = { path = "endo_ai" }
+endoreg-db = { path = "endoreg-db" }
+lx-anonymizer = { path = "lx-anonymizer" }
